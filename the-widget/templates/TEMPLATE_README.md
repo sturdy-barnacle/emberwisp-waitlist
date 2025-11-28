@@ -4,15 +4,22 @@ This directory contains all the email templates used by the waitlist widget. You
 
 ## 🚀 Quick Start
 
-### **1. Choose Your Template Style**
+### **1. Set Branding via Environment Variables**
 
-Set your preferred template in your `.env` file:
+Configure your email branding in `.env`:
 
 ```bash
-# Choose one of: minimal (default), professional, branded
-# Note: 'default' is an alias for 'minimal' (backward compatibility)
-EMAIL_TEMPLATE_STYLE=minimal
+# Template style
+EMAIL_TEMPLATE_STYLE=minimal          # or professional, branded
+
+# Branding (optional - has defaults)
+EMAIL_PROJECT_NAME=Your Project
+EMAIL_SENDER_NAME=The Team
+EMAIL_PRIMARY_COLOR=#4f46e5
+EMAIL_LOGO_URL=https://yourdomain.com/logo.png
 ```
+
+For detailed message customization, edit `config.js` in this directory.
 
 ### **2. Restart Your Application**
 
@@ -121,25 +128,27 @@ EMAIL_TEMPLATE_STYLE=branded
 
 ### **Method 2: Content & Color Customization**
 
-Edit `templates/config.js` to customize content and colors:
+**Option A: Environment Variables (recommended for key branding)**
+
+```bash
+EMAIL_PROJECT_NAME=Your Startup
+EMAIL_SENDER_NAME=The Founder
+EMAIL_PRIMARY_COLOR=#4f46e5
+EMAIL_LOGO_URL=https://yourdomain.com/logo.png
+```
+
+**Option B: Edit `templates/config.js` (for detailed customization)**
 
 ```javascript
 export const emailConfig = {
-  // Company Information
-  projectName: "Your Startup",
-  senderName: "The Founder",
-  
-  // Logo Configuration (Professional & Branded templates only)
-  // Recommended: 200px wide max, PNG, JPG, or SVG format
-  // Maximum enforced: 250px wide (auto-scaled if larger)
-  // Branded templates: Shows gradient placeholder SVG if empty (unless brandedHeaderTextOnly is true)
-  // Professional templates: Hides logo if empty
-  logoUrl: "https://yourdomain.com/logo.png", // or "" for placeholder (branded) or hide (professional)
+  // These can also be set via environment variables (see above)
+  projectName: process.env.EMAIL_PROJECT_NAME || "Your Startup",
+  senderName: process.env.EMAIL_SENDER_NAME || "The Founder",
+  primaryColor: process.env.EMAIL_PRIMARY_COLOR || "#4f46e5",
+  logoUrl: process.env.EMAIL_LOGO_URL || "",
   
   // Branded template text-only header option
-  // If true and logoUrl is empty: Shows text (projectName) with primaryColor background
-  // If false and logoUrl is empty: Shows placeholder SVG logo with transparent background
-  brandedHeaderTextOnly: false, // Set to true for text-only header with background color
+  brandedHeaderTextOnly: process.env.EMAIL_BRANDED_TEXT_ONLY === 'true',
   
   // Brand Colors (affects all templates)
   primaryColor: "#6366f1",      // Your brand color
@@ -257,7 +266,12 @@ For advanced users who want to create completely custom templates:
 
 ### Change Brand Colors
 
-Edit `config.js`:
+Set via environment variable (recommended):
+```bash
+EMAIL_PRIMARY_COLOR=#your-brand-color
+```
+
+Or edit `config.js`:
 ```javascript
 primaryColor: "#your-brand-color",
 ```
@@ -266,7 +280,11 @@ primaryColor: "#your-brand-color",
 
 **Easy logo support for Professional and Branded templates:**
 
-1. **Set your logo URL** in `config.js`:
+1. **Set your logo URL** via environment variable (recommended):
+   ```bash
+   EMAIL_LOGO_URL=https://yourdomain.com/logo.png
+   ```
+   Or in `config.js`:
    ```javascript
    logoUrl: "https://yourdomain.com/logo.png", // Recommended: 200px max width
    ```

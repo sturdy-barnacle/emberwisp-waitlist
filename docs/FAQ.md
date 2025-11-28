@@ -44,19 +44,16 @@ See `api/shared/README.md` for detailed customization examples.
 
 ### Where do I configure CORS allowed origins?
 
-Edit `the-widget/api/shared/config.js`:
+Set the `CORS_ALLOWED_ORIGINS` environment variable (comma-separated list):
 
-```js
-export const CORS_CONFIG = {
-  allowedOrigins: [
-    'https://yourdomain.com',
-    'https://www.yourdomain.com',
-    'http://localhost:4000', // Add your domains here
-  ],
-};
+```bash
+vercel env add CORS_ALLOWED_ORIGINS
+# Enter: https://yourdomain.com,https://www.yourdomain.com
 ```
 
 Then redeploy: `vercel --prod`
+
+Local development servers (`localhost:3000`, `localhost:4000`) are always allowed automatically.
 
 ### What does CORS stand for?
 
@@ -89,8 +86,10 @@ Default is 5 signups per IP per hour.
 
 ### "CORS error" in browser console
 
-**Fix:** Add your domain to `CORS_CONFIG.allowedOrigins` in `the-widget/api/shared/config.js`, then redeploy:
+**Fix:** Add your domain to the `CORS_ALLOWED_ORIGINS` environment variable:
 ```bash
+vercel env add CORS_ALLOWED_ORIGINS
+# Enter: https://yourdomain.com,https://www.yourdomain.com
 vercel --prod
 ```
 
@@ -162,17 +161,90 @@ Or disable rate limiting by removing Upstash environment variables.
 
 The `email_bounced` and `email_unsubscribed` fields can be updated via webhooks from any email service.
 
+## Resend Contacts Sync
+
+### What is Resend Contacts sync?
+
+**Optional feature** that syncs confirmed waitlist subscribers to a Resend Audience. This enables:
+- Sending marketing/newsletter emails to confirmed subscribers via Resend
+- Two-way sync of subscription preferences (bounces, unsubscribes)
+- Keeping Supabase and Resend in sync automatically
+
+### Is the sync automatic?
+
+**Yes, sync is automatic once configured.** A manual migration script is available to sync existing contacts from Supabase to Resend (see [README.md](../README.md#2b-set-up-resend-contacts-sync-optional)).
+
+| Direction | Trigger | Automatic? |
+|-----------|---------|------------|
+| Supabase → Resend | User confirms email | ✅ Yes |
+| Supabase → Resend | User unsubscribes via your app | ✅ Yes |
+| Resend → Supabase | Bounce/complaint/unsubscribe | ✅ Yes (webhook) |
+| Existing contacts | One-time migration | Manual script |
+
+**Prerequisites for automatic sync:**
+1. `RESEND_AUDIENCE_ID` environment variable must be set
+2. Webhook must be configured in Resend dashboard (for Resend → Supabase direction)
+
+### Do I need to set up Resend Contacts sync?
+
+**No, it's optional.** The waitlist widget works perfectly without it. Set it up if you want to:
+- Send marketing emails to confirmed subscribers
+- Use Resend's broadcast/campaign features
+- Have automatic bounce/unsubscribe handling
+
+### How does two-way sync work?
+
+**Supabase → Resend:**
+- User confirms email → Added to Resend Audience
+- User unsubscribes via your app → Marked unsubscribed in Resend
+
+**Resend → Supabase (via webhooks):**
+- Email bounces → `email_bounced = true` in Supabase
+- Spam complaint → `email_unsubscribed = true` in Supabase
+- User unsubscribes via Resend → `email_unsubscribed = true` in Supabase
+
+### How do I set up Resend webhooks?
+
+1. Go to [Resend Webhooks](https://resend.com/webhooks)
+2. Click "Add Webhook"
+3. Set endpoint URL: `https://your-api.vercel.app/api/webhooks/resend`
+4. Select events: `email.bounced`, `email.complained`, `contact.unsubscribed`
+5. Copy the signing secret and add to Vercel: `vercel env add RESEND_WEBHOOK_SECRET`
+6. Redeploy: `vercel --prod`
+
+### How do I sync existing contacts to Resend?
+
+Use the bulk sync script:
+
+```bash
+# Preview what would be synced
+node scripts/sync-contacts-to-resend.js --dry-run
+
+# Sync all confirmed, non-bounced, non-unsubscribed contacts
+node scripts/sync-contacts-to-resend.js
+```
+
+The script syncs contacts that are:
+- `email_verified = true`
+- `email_bounced = false`
+- `email_unsubscribed = false`
+
 ## Customization
 
 ### How do I customize email templates?
 
-**Easy!** Edit the template files:
+**Easy!** Use environment variables for key branding:
 
-1. **Text content:** Edit `the-widget/templates/config.js` (project name, colors, messages)
-2. **HTML design:** Edit `the-widget/templates/confirmation-email.html` or `welcome-email.html`
-3. **Redeploy:** `vercel --prod`
+```bash
+EMAIL_TEMPLATE_STYLE=minimal          # or professional, branded
+EMAIL_PROJECT_NAME=Your Project
+EMAIL_PRIMARY_COLOR=#4f46e5
+EMAIL_LOGO_URL=https://yourdomain.com/logo.png
+```
 
-Templates use simple `{{variable}}` replacement - no JavaScript knowledge needed!
+For detailed message customization, edit `the-widget/templates/config.js`.
+
+Then redeploy: `vercel --prod`
 
 See `the-widget/templates/TEMPLATE_README.md` for detailed instructions.
 

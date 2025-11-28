@@ -13,6 +13,8 @@ This directory contains the SQL setup script for the waitlist widget database.
 
 The schema includes fields like `email_bounced` and `email_unsubscribed` that can be updated via Resend webhooks or any other email service's webhook system.
 
+**Resend Contacts Sync:** The optional Resend Contacts sync feature uses existing database fields - no schema changes required. When enabled, the API automatically syncs subscription status between Supabase and Resend Audiences. See the main [README.md](../../README.md#2b-set-up-resend-contacts-sync-optional) for setup instructions.
+
 ## Setup File
 
 ### `setup.sql` - Complete Setup (Recommended)

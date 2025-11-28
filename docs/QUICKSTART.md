@@ -249,32 +249,21 @@ vercel env add DOUBLE_OPTIN
 **What this means:** Tell the API which websites are allowed to use it (security feature).
 
 **How to do it:**
-1. Open `the-widget/api/shared/config.js` in a text editor
-2. Find the `CORS_CONFIG` section (around line 27)
-3. Replace `yourdomain.com` with your actual website domain(s):
-
-```js
-export const CORS_CONFIG = {
-  allowedOrigins: [
-    'https://yourdomain.com',        // ← Replace with your actual domain
-    'https://www.yourdomain.com',    // ← Replace if you use www
-    'http://localhost:4000',          // Keep this for local Jekyll testing
-  ],
-};
+```bash
+vercel env add CORS_ALLOWED_ORIGINS
 ```
 
-**Example:** If your site is `https://mysite.com`, it would look like:
-```js
-export const CORS_CONFIG = {
-  allowedOrigins: [
-    'https://mysite.com',
-    'https://www.mysite.com',
-    'http://localhost:4000',
-  ],
-};
+**When prompted:**
+- Enter your domains as a comma-separated list
+- Example: `https://mysite.com,https://www.mysite.com`
+- Select environment: Press Enter for all (Development, Preview, Production)
+
+**Example:** If your site is `https://mysite.com`, enter:
+```
+https://mysite.com,https://www.mysite.com
 ```
 
-**Save the file** after making changes.
+**Note:** Local development servers (`localhost:3000`, `localhost:4000`) are always allowed automatically.
 
 ---
 
@@ -598,6 +587,20 @@ See the main [README.md](../README.md) for framework-specific instructions. The 
 
 **❌ Having issues?** See the Troubleshooting section below.
 
+## Optional: Resend Contacts Sync
+
+**What it does:** Syncs confirmed subscribers to a Resend Audience for marketing emails, with two-way sync for bounces and unsubscribes.
+
+**When to add:** If you plan to send marketing/newsletter emails to confirmed waitlist subscribers.
+
+**Quick setup:**
+1. Create an Audience at [resend.com/audiences](https://resend.com/audiences)
+2. Add to Vercel: `vercel env add RESEND_AUDIENCE_ID production`
+3. Set up webhooks at [resend.com/webhooks](https://resend.com/webhooks) pointing to `https://your-api.vercel.app/api/webhooks/resend`
+4. Redeploy: `vercel --prod`
+
+**For detailed setup instructions**, see the main [README.md](../README.md#2b-set-up-resend-contacts-sync-optional).
+
 ## Optional: Add Rate Limiting
 
 **What it does:** Prevents spam by limiting how many signups per IP address.
@@ -651,7 +654,7 @@ Replace `0x4AAAAAAA...` with your actual site key from Cloudflare.
 
 ### Form not submitting
 - Check that your API URL is correct in the include statement
-- Make sure CORS is configured for your domain in `api/shared/config.js`
+- Make sure `CORS_ALLOWED_ORIGINS` environment variable includes your domain
 - Check browser console (F12) for error messages
 
 ### Emails not arriving
