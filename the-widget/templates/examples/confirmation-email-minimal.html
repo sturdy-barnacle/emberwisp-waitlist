@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Minimal email template styles */
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: {{textColor}}; max-width: 600px; margin: 0 auto; padding: 0; background-color: #ffffff; }
+    .content { padding: 60px 40px; }
+    h1 { color: {{headingColor}}; font-size: 32px; font-weight: 700; margin: 0 0 40px 0; line-height: 1.1; }
+    p { font-size: 16px; margin: 0 0 24px 0; line-height: 1.6; }
+    .button { display: inline-block; padding: 16px 32px; background-color: {{primaryColor}}; color: white; text-decoration: none; border-radius: 0; font-weight: 600; font-size: 16px; margin: 40px 0; border: 2px solid {{primaryColor}}; }
+    .secondary-text { font-size: 14px; color: {{secondaryTextColor}}; line-height: 1.5; }
+    .signature { margin-top: 48px; font-size: 16px; }
+    .signature strong { color: #111111; font-weight: 600; }
+    @media only screen and (max-width: 600px) {
+      .content { padding: 40px 20px; }
+      h1 { font-size: 28px; }
+      .button { padding: 14px 24px; font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Preheader text (hidden in email clients but shows in inbox preview) -->
+  <div style="display: none; max-height: 0; overflow: hidden;">{{confirmationPreheader}}</div>
+  
+  <div class="content">
+    <h1>{{confirmationGreeting}}</h1>
+    
+    <p>{{confirmationMessage}}</p>
+    
+    <div style="text-align: left; margin: 40px 0;">
+      <a href="{{confirmUrl}}" class="button" style="display: inline-block; padding: 16px 32px; background-color: {{primaryColor}}; color: white; text-decoration: none; border-radius: 0; font-weight: 600; font-size: 16px; border: 2px solid {{primaryColor}};">
+        {{confirmationButtonText}}
+      </a>
+    </div>
+    
+    <div class="secondary-text" style="font-size: 14px; color: {{secondaryTextColor}}; margin: 24px 0;">
+      Or copy and paste this link:<br>
+      <a href="{{confirmUrl}}" style="color: {{primaryColor}}; word-break: break-all;">{{confirmUrl}}</a>
+    </div>
+    
+    <p class="secondary-text" style="font-size: 14px; color: {{secondaryTextColor}}; margin-top: 32px;">
+      {{confirmationLinkExpiry}}
+    </p>
+    
+    <div style="font-size: 12px; color: {{secondaryTextColor}}; margin-top: 48px; padding-top: 24px; border-top: 1px solid #e5e7eb;">
+      {{confirmationIgnoreMessage}}
+    </div>
+  </div>
+</body>
+</html>
+

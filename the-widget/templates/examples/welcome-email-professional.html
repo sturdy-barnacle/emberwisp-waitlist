@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Professional email template styles */
+    body { font-family: Georgia, 'Times New Roman', serif; line-height: 1.8; color: {{textColor}}; max-width: 600px; margin: 0 auto; padding: 0; background-color: #ffffff; }
+    .content { padding: 50px 40px; }
+    /* Logo styling - Recommended max: 200px wide, Enforced max: 250px */
+    .logo-container { text-align: center; padding: 30px 20px 20px 20px; margin-bottom: 30px; }
+    .logo-container img { max-width: 250px; width: auto; height: auto; display: block; margin: 0 auto; }
+    .header { border-bottom: 2px solid #e0e0e0; padding-bottom: 24px; margin-bottom: 40px; }
+    h1 { color: {{headingColor}}; font-size: 30px; font-weight: normal; margin: 0; line-height: 1.2; letter-spacing: -0.5px; }
+    p { font-size: 16px; margin: 0 0 24px 0; line-height: 1.8; }
+    .signature { margin-top: 48px; font-size: 16px; }
+    .signature strong { color: {{headingColor}}; font-weight: 600; }
+    .signature .project-name { color: {{secondaryTextColor}}; font-size: 14px; font-style: italic; }
+    .footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid #ecf0f1; font-size: 11px; color: {{secondaryTextColor}}; }
+    @media only screen and (max-width: 600px) {
+      .content { padding: 30px 20px; }
+      h1 { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Preheader text (hidden in email clients but shows in inbox preview) -->
+  <div style="display: none; max-height: 0; overflow: hidden;">{{welcomePreheader}}</div>
+  
+  <!-- Logo (optional - only shows if logoUrl is set in config.js) -->
+  <!-- Recommended max: 200px wide, Enforced max: 250px (auto-scaled) -->
+  {{logoHtml}}
+  
+  <div class="content">
+    <div class="header" style="border-bottom: 2px solid #e0e0e0; padding-bottom: 24px; margin-bottom: 40px;">
+      <h1>{{welcomeGreeting}}</h1>
+    </div>
+  
+  <p>{{welcomeMessage}}</p>
+  
+  <p>{{welcomeBody}}</p>
+  
+  <p>{{welcomeFeedbackMessage}}</p>
+  
+    <div class="signature" style="margin-top: 48px; font-size: 16px;">
+      {{welcomeSignature}}<br>
+      <strong style="color: {{headingColor}}; font-weight: 600;">{{senderName}}</strong><br>
+      <span class="project-name" style="color: {{secondaryTextColor}}; font-size: 14px; font-style: italic;">{{projectName}}</span>
+    </div>
+    
+    <div class="footer" style="margin-top: 60px; padding-top: 24px; border-top: 1px solid #ecf0f1; font-size: 11px; color: {{secondaryTextColor}};">
+      {{unsubscribeFooter}}
+      <br><br>
+      <a href="{{unsubscribeUrl}}" style="color: {{secondaryTextColor}}; text-decoration: underline;">
+        {{unsubscribeText}}
+      </a>
+    </div>
+  </div>
+</body>
+</html>
+

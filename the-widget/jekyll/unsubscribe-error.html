@@ -1,0 +1,117 @@
+---
+layout: default
+title: "Unsubscribe Error"
+---
+
+<div class="waitlist-page">
+  <div class="waitlist-container">
+    <div class="waitlist-content error">
+      <h1>❌ Unsubscribe Error</h1>
+      
+      <p>We encountered an error while trying to unsubscribe you from our email list.</p>
+      
+      <div class="error-details">
+        <p><strong>Possible reasons:</strong></p>
+        <ul>
+          <li>The unsubscribe link may have expired</li>
+          <li>You may have already been unsubscribed</li>
+          <li>There was a temporary server error</li>
+        </ul>
+      </div>
+      
+      <p>If you continue to receive emails and want to unsubscribe, please contact us directly.</p>
+      
+      <div class="waitlist-actions">
+        <a href="/" class="waitlist-button secondary">← Back to Home</a>
+        <a href="mailto:hello@yourdomain.com" class="waitlist-button">Contact Support</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.waitlist-page {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.waitlist-container {
+  max-width: 600px;
+  width: 100%;
+}
+
+.waitlist-content {
+  text-align: center;
+  padding: 2rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.waitlist-content.error {
+  background: #fff5f5;
+  border-color: #fed7d7;
+}
+
+.waitlist-content h1 {
+  color: #dc3545;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.waitlist-content p {
+  color: #6c757d;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.error-details {
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 4px;
+  margin: 1.5rem 0;
+  text-align: left;
+}
+
+.error-details ul {
+  margin: 0.5rem 0 0 1rem;
+  color: #495057;
+}
+
+.error-details li {
+  margin-bottom: 0.25rem;
+}
+
+.waitlist-actions {
+  margin-top: 2rem;
+}
+
+.waitlist-button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  margin: 0 0.5rem;
+}
+
+.waitlist-button:hover {
+  background: #0056b3;
+  color: white;
+  text-decoration: none;
+}
+
+.waitlist-button.secondary {
+  background: #6c757d;
+}
+
+.waitlist-button.secondary:hover {
+  background: #545b62;
+}
+</style>

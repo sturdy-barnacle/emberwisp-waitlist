@@ -1,0 +1,12 @@
+<svg width="200" height="60" xmlns="http://www.w3.org/2000/svg">
+  <!-- Professional placeholder logo for branded email templates -->
+  <!-- Replace this with your own logo by setting logoUrl in config.js -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="60" fill="url(#grad)" rx="6"/>
+  <text x="100" y="38" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="white" text-anchor="middle" letter-spacing="0.5px">Your Logo</text>
+</svg>

@@ -1,0 +1,106 @@
+/* Minimal Email Template Styles (Default) */
+/* Clean, simple design with minimal styling */
+/* 
+ * NOTE: This file uses template variables ({{variableName}}) that are replaced
+ * at runtime with values from templates/config.js. CSS linters will show errors
+ * for these variables - this is expected and normal for template files.
+ */
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: {{textColor}};
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: #ffffff;
+}
+
+h1 {
+  color: {{headingColor}};
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 32px 0;
+  line-height: 1.2;
+}
+
+p {
+  font-size: 16px;
+  margin: 0 0 20px 0;
+  line-height: 1.6;
+}
+
+.button {
+  display: inline-block;
+  padding: 16px 32px;
+  background-color: {{primaryColor}};
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  margin: 32px 0;
+  transition: background-color 0.2s ease;
+}
+
+.button:hover {
+  opacity: 0.9;
+}
+
+.secondary-text {
+  font-size: 14px;
+  color: {{secondaryTextColor}};
+  line-height: 1.5;
+}
+
+.small-text {
+  font-size: 12px;
+  color: {{secondaryTextColor}};
+  line-height: 1.4;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 40px 0;
+}
+
+.signature {
+  margin-top: 40px;
+  font-size: 16px;
+}
+
+.signature strong {
+  color: {{headingColor}};
+}
+
+.footer {
+  margin-top: 40px;
+  padding-top: 24px;
+}
+
+.link {
+  color: {{primaryColor}};
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+.link:hover {
+  opacity: 0.8;
+}
+
+/* Mobile responsiveness */
+@media only screen and (max-width: 600px) {
+  body {
+    padding: 20px 16px;
+  }
+  
+  h1 {
+    font-size: 24px;
+  }
+  
+  .button {
+    padding: 14px 24px;
+    font-size: 15px;
+  }
+}

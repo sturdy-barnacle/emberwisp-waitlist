@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "functions": {
+    "api/*.js": {
+      "memory": 256,
+      "maxDuration": 10
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/test-waitlist-confirmed",
+      "destination": "/api/test-waitlist-confirmed"
+    },
+    {
+      "source": "/test-waitlist-error",
+      "destination": "/api/test-waitlist-error"
+    },
+    {
+      "source": "/test-unsubscribe-success",
+      "destination": "/api/test-unsubscribe-success"
+    },
+    {
+      "source": "/test-unsubscribe-error",
+      "destination": "/api/test-unsubscribe-error"
+    }
+  ]
+}

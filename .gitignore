@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# package-lock.json
+yarn.lock
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.test
+.env.production
+
+# Build outputs
+dist/
+build/
+.vercel/
+.vercel-production/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Test coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Test files (if you want to exclude test outputs)
+test-results/
+playwright-report/
+
+# Local development
+.local/
+example_emails/
+generate-email-screenshots*.js
+generate_email_screenshots_steps.md
+node_modules
+docs/crm_planning.md
+docs/to-fix.md

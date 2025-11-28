@@ -1,0 +1,63 @@
+<!--
+  Waitlist Signup Form Component for Jekyll (v1)
+  
+  Features:
+  - Rate limiting (server-side)
+  - Optional Cloudflare Turnstile captcha
+  - Double opt-in support
+  
+  Usage in your Jekyll page/layout:
+    {% include waitlist-form.html %}
+  
+  With source tracking:
+    {% include waitlist-form.html source="homepage" %}
+  
+  With Turnstile captcha (requires site key):
+    {% include waitlist-form.html turnstile_site_key="0x4AAAAAAA..." %}
+  
+  With custom API URL:
+    {% include waitlist-form.html api_url="https://your-api.vercel.app/api/subscribe" %}
+-->
+
+<!-- Load widget styles -->
+<link rel="stylesheet" href="{{ '/assets/waitlist-form.css' | relative_url }}">
+
+<div class="waitlist-form" id="waitlist-form"
+     data-api-url="{{ include.api_url | default: 'https://your-waitlist-api.vercel.app/api/subscribe' }}"
+     data-source="{{ include.source | default: 'website' }}"
+     {% if include.turnstile_site_key %}data-turnstile-site-key="{{ include.turnstile_site_key }}"{% endif %}>
+  <form id="waitlist-signup" class="waitlist-form__form">
+    <div class="waitlist-form__input-group">
+      <input 
+        type="email" 
+        name="email" 
+        id="waitlist-email"
+        placeholder="Enter your email"
+        required
+        class="waitlist-form__input"
+        autocomplete="email"
+      >
+      <button type="submit" class="waitlist-form__button" id="waitlist-submit">
+        <span class="waitlist-form__button-text">Join Waitlist</span>
+        <span class="waitlist-form__button-loading" style="display: none;">
+          <svg class="waitlist-form__spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
+            <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
+          </svg>
+        </span>
+      </button>
+    </div>
+    
+    {% if include.turnstile_site_key %}
+    <!-- Turnstile widget container -->
+    <div id="turnstile-container" class="waitlist-form__turnstile"></div>
+    <!-- Load Turnstile script -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    {% endif %}
+    
+    <p class="waitlist-form__message" id="waitlist-message"></p>
+  </form>
+</div>
+
+<!-- Load widget JavaScript -->
+<script src="{{ '/assets/waitlist-form.js' | relative_url }}"></script>

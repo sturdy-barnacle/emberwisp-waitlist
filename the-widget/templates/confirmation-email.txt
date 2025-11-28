@@ -1,0 +1,11 @@
+{{confirmationGreeting}}
+
+{{confirmationMessage}}
+
+{{confirmUrl}}
+
+{{confirmationLinkExpiry}}
+
+---
+{{confirmationIgnoreMessage}}
+

@@ -1,0 +1,105 @@
+.waitlist-form {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.waitlist-form__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.waitlist-form__input-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.waitlist-form__input {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.waitlist-form__input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.waitlist-form__button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  background-color: #4f46e5;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+}
+
+.waitlist-form__button:hover:not(:disabled) {
+  background-color: #4338ca;
+}
+
+.waitlist-form__button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.waitlist-form__spinner {
+  width: 20px;
+  height: 20px;
+  animation: waitlist-spin 1s linear infinite;
+}
+
+@keyframes waitlist-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.waitlist-form__turnstile {
+  margin-top: 0.5rem;
+}
+
+.waitlist-form__message {
+  font-size: 0.875rem;
+  margin: 0;
+  min-height: 1.25rem;
+}
+
+.waitlist-form__message--success {
+  color: #059669;
+}
+
+.waitlist-form__message--error {
+  color: #dc2626;
+}
+
+.waitlist-form__message--info {
+  color: #2563eb;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .waitlist-form__input {
+    background-color: #1f2937;
+    border-color: #374151;
+    color: #f9fafb;
+  }
+  
+  .waitlist-form__input:focus {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+  }
+}
+

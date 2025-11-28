@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waitlist Form Test</title>
+  
+  <!-- Load widget styles -->
+  <link rel="stylesheet" href="/assets/waitlist-form.css">
+  
+  <style>
+    body {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    
+    h1 {
+      margin-bottom: 10px;
+      color: #222;
+    }
+    
+    .test-info {
+      background: #f5f5f5;
+      border-left: 4px solid #0066cc;
+      padding: 15px;
+      margin-bottom: 30px;
+      border-radius: 4px;
+    }
+    
+    .test-info code {
+      background: #e8e8e8;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+    
+    .test-info ul {
+      margin: 10px 0 0 0;
+      padding-left: 20px;
+    }
+    
+    .test-section {
+      margin: 40px 0;
+      padding: 20px;
+      background: #fafafa;
+      border-radius: 8px;
+    }
+    
+    .test-section h2 {
+      margin-top: 0;
+      font-size: 1.2em;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+  <h1>Waitlist Form Test Page</h1>
+  
+  <div class="test-info">
+    <p><strong>Testing the waitlist form locally</strong></p>
+    <p>This page allows you to test the waitlist form without setting up a Jekyll site.</p>
+    <ul>
+      <li>Make sure <code>npm run start:dev</code> is running in the <code>the-widget</code> directory</li>
+      <li>API endpoint: <code>http://localhost:3000/api/subscribe</code></li>
+      <li>This page is accessible at: <code>http://localhost:3000/local-test/test-form.html</code></li>
+    </ul>
+  </div>
+
+  <!-- Basic Form Test -->
+  <div class="test-section">
+    <h2>Basic Form (Default Settings)</h2>
+    <p>Standard form with default API URL and source tracking.</p>
+    
+    <div class="waitlist-form" id="waitlist-form"
+         data-api-url="http://localhost:3000/api/subscribe"
+         data-source="test-page">
+      <form id="waitlist-signup" class="waitlist-form__form">
+        <div class="waitlist-form__input-group">
+          <input 
+            type="email" 
+            name="email" 
+            id="waitlist-email"
+            placeholder="Enter your email"
+            required
+            class="waitlist-form__input"
+            autocomplete="email"
+          >
+          <button type="submit" class="waitlist-form__button" id="waitlist-submit">
+            <span class="waitlist-form__button-text">Join Waitlist</span>
+            <span class="waitlist-form__button-loading" style="display: none;">
+              <svg class="waitlist-form__spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
+                <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
+              </svg>
+            </span>
+          </button>
+        </div>
+        <p class="waitlist-form__message" id="waitlist-message"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Load widget JavaScript -->
+  <script src="/assets/waitlist-form.js"></script>
+  
+  <div class="test-info" style="margin-top: 40px;">
+    <p><strong>Turnstile CAPTCHA:</strong> This test form doesn't include CAPTCHA. To test with Turnstile, see the Jekyll include at <code>jekyll/_includes/waitlist-form.html</code> and add your site key via the <code>turnstile_site_key</code> parameter.</p>
+  </div>
+</body>
+</html>
+

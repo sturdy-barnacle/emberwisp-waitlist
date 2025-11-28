@@ -1,0 +1,16 @@
+{{welcomeGreeting}}
+
+{{welcomeMessage}}
+
+{{welcomeBody}}
+
+{{welcomeFeedbackMessage}}
+
+{{welcomeSignature}}
+{{senderName}}
+
+---
+{{unsubscribeFooter}}
+
+{{unsubscribeText}}: {{unsubscribeUrl}}
+

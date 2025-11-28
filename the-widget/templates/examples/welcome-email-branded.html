@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Branded email template styles */
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: {{textColor}}; max-width: 600px; margin: 0 auto; padding: 0; background-color: #ffffff; }
+    .header { background-color: {{brandedHeaderBgColor}}; padding: 30px 20px; text-align: center; }
+    .header .logo { color: white; font-size: 24px; font-weight: bold; }
+    /* Logo image styling - Recommended max: 200px wide, Enforced max: 250px */
+    .header .logo img { max-width: 250px; width: auto; height: auto; display: block; margin: 0 auto; }
+    .content { padding: 40px 20px; }
+    h1 { color: {{headingColor}}; font-size: 28px; margin-bottom: 20px; }
+    p { font-size: 16px; margin-bottom: 20px; }
+    .signature { margin-top: 40px; font-size: 16px; }
+    .signature strong { color: {{headingColor}}; }
+    .footer { background-color: #f5f5f5; padding: 20px; text-align: center; font-size: 12px; color: {{secondaryTextColor}}; }
+    @media only screen and (max-width: 600px) {
+      .header { padding: 20px 16px; }
+      .content { padding: 30px 16px; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Preheader text (hidden in email clients but shows in inbox preview) -->
+  <div style="display: none; max-height: 0; overflow: hidden;">{{welcomePreheader}}</div>
+  
+  <!-- Header with logo or text -->
+  <!-- Logo image (if logoUrl is set), placeholder SVG (if empty and not text-only), or text (if text-only) -->
+  <!-- Recommended max: 200px wide, Enforced max: 250px (auto-scaled) -->
+  <!-- Background color: transparent if ANY logo (custom or placeholder), primaryColor if text-only -->
+  <div class="header" style="background-color: {{brandedHeaderBgColor}}; padding: 30px 20px; text-align: center;">
+    {{logoHeaderHtml}}
+  </div>
+  
+  <div class="content" style="padding: 40px 20px;">
+    <h1 style="color: {{headingColor}}; font-size: 28px; margin-bottom: 20px;">{{welcomeGreeting}}</h1>
+    
+    <p style="font-size: 16px; margin-bottom: 20px;">{{welcomeMessage}}</p>
+    
+    <p style="font-size: 16px; margin-bottom: 20px;">{{welcomeBody}}</p>
+    
+    <p style="font-size: 16px; margin-bottom: 20px;">{{welcomeFeedbackMessage}}</p>
+    
+    <div class="signature" style="margin-top: 40px; font-size: 16px;">
+      {{welcomeSignature}}<br>
+      <strong style="color: {{headingColor}};">{{senderName}}</strong>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <div class="footer" style="background-color: #f5f5f5; padding: 20px; text-align: center; font-size: 12px; color: {{secondaryTextColor}};">
+    {{unsubscribeFooter}}
+    <br><br>
+    <a href="{{unsubscribeUrl}}" style="color: {{secondaryTextColor}}; text-decoration: underline;">
+      {{unsubscribeText}}
+    </a>
+  </div>
+</body>
+</html>

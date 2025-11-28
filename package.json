@@ -1,0 +1,17 @@
+{
+  "name": "emberwisp-waitlist",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Production-ready waitlist signup system with unified contacts, 4 email template styles, and full customization",
+  "scripts": {
+    "generate-email-screenshots": "node generate-email-screenshots.js",
+    "generate-email-previews": "node generate-email-screenshots-simple.js"
+  },
+  "devDependencies": {
+    "puppeteer": "^21.0.0",
+    "html-to-image": "^1.11.11"
+  },
+  "keywords": ["waitlist", "email", "templates", "signup", "contacts", "crm", "deduplication", "supabase", "resend"],
+  "author": "",
+  "license": "MIT"
+}

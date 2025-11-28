@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Professional email template styles */
+    body { font-family: Georgia, 'Times New Roman', serif; line-height: 1.8; color: {{textColor}}; max-width: 600px; margin: 0 auto; padding: 0; background-color: #ffffff; }
+    .content { padding: 50px 40px; }
+    /* Logo styling - Recommended max: 200px wide, Enforced max: 250px */
+    .logo-container { text-align: center; padding: 30px 20px 20px 20px; margin-bottom: 30px; }
+    .logo-container img { max-width: 250px; width: auto; height: auto; display: block; margin: 0 auto; }
+    .header { border-bottom: 2px solid #e0e0e0; padding-bottom: 24px; margin-bottom: 40px; }
+    h1 { color: {{headingColor}}; font-size: 30px; font-weight: normal; margin: 0; line-height: 1.2; letter-spacing: -0.5px; }
+    p { font-size: 16px; margin: 0 0 24px 0; line-height: 1.8; }
+    .button { display: inline-block; padding: 14px 32px; background-color: {{primaryColor}}; color: white; text-decoration: none; border-radius: 4px; font-weight: 500; font-size: 15px; letter-spacing: 0.5px; margin: 40px 0; }
+    .secondary-text { font-size: 14px; color: {{secondaryTextColor}}; line-height: 1.6; }
+    .small-text { font-size: 12px; color: {{secondaryTextColor}}; line-height: 1.5; }
+    .link { color: {{primaryColor}}; text-decoration: underline; word-break: break-all; }
+    .link-section { margin-top: 32px; padding-top: 24px; border-top: 1px solid #ecf0f1; }
+    .footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid #ecf0f1; font-size: 11px; color: {{secondaryTextColor}}; }
+    @media only screen and (max-width: 600px) {
+      .content { padding: 30px 20px; }
+      h1 { font-size: 26px; }
+      .button { padding: 12px 24px; font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Preheader text (hidden in email clients but shows in inbox preview) -->
+  <div style="display: none; max-height: 0; overflow: hidden;">{{confirmationPreheader}}</div>
+  
+  <!-- Logo (optional - only shows if logoUrl is set in config.js) -->
+  <!-- Recommended max: 200px wide, Enforced max: 250px (auto-scaled) -->
+  {{logoHtml}}
+  
+  <div class="content">
+    <div class="header" style="border-bottom: 2px solid #e0e0e0; padding-bottom: 24px; margin-bottom: 40px;">
+      <h1>{{confirmationGreeting}}</h1>
+    </div>
+  
+  <p>{{confirmationMessage}}</p>
+  
+  <div style="text-align: left; margin: 40px 0;">
+      <a href="{{confirmUrl}}" class="button" style="display: inline-block; padding: 14px 32px; background-color: {{primaryColor}}; color: white; text-decoration: none; border-radius: 4px; font-weight: 500; font-size: 15px; letter-spacing: 0.5px;">
+        {{confirmationButtonText}}
+      </a>
+  </div>
+  
+    <div class="link-section secondary-text" style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #ecf0f1; font-size: 14px; color: {{secondaryTextColor}};">
+      Or copy this link: <a href="{{confirmUrl}}" class="link" style="color: {{primaryColor}}; word-break: break-all;">{{confirmUrl}}</a>
+    </div>
+    
+    <p class="small-text" style="font-size: 12px; color: {{secondaryTextColor}}; margin-top: 32px;">
+      {{confirmationLinkExpiry}}
+    </p>
+  
+    <div class="footer" style="margin-top: 60px; padding-top: 24px; border-top: 1px solid #ecf0f1; font-size: 11px; color: {{secondaryTextColor}};">
+      {{confirmationIgnoreMessage}}
+    </div>
+  </div>
+</body>
+</html>
+
