@@ -1,19 +1,15 @@
-# emberwisp waitlist widget
+# Waitlist API (v1)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/sturdy-barnacle/emberwisp-waitlist)
 
-> Simple, tinkerer-friendly, mostly-drop-in waitlist widget built to work on static sites running on Jekyll, etc. (but easily configurable to make it work wherever)
+Simple, tinkerer-friendly, mostly-drop-in waitlist widget built to work on static sites: Jekyll, plain HTML, React, Astro, Hugo, or anything that can POST JSON.
 
 **New to this project?** Check out the [Quick Start Guide](docs/QUICKSTART.md) to get up and running in minutes.
 
 **Have questions?** See the [FAQ](docs/FAQ.md) for common questions about DNS records, troubleshooting, customization, and more.
 
 ---
-
-# Waitlist API (v1)
-
-A production-ready waitlist signup system with security features built-in. Works with any frontend: Jekyll, plain HTML, React, Astro, Hugo, or anything that can POST JSON.
 
 ## ⚠️ Important: How This Works
 
@@ -22,7 +18,7 @@ A production-ready waitlist signup system with security features built-in. Works
 - **The API** (this repository) → Deploy to **Vercel** (one-time setup, takes 5 minutes)
 - **Your website** (Jekyll, React, etc.) → Stays **wherever it's already hosted** (GitHub Pages, Netlify, your server, etc.)
 - **The form** → You copy some files (CSS/JS/HTML) to your existing website
-- **They communicate** → Your form sends requests to the Vercel API over the internet
+- **They communicate** → Your form sends requests to the API you just deployed
 
 **You do NOT need to:**
 - Move your website to a new server
@@ -33,8 +29,6 @@ A production-ready waitlist signup system with security features built-in. Works
 - Deploy the API to Vercel (separate from your website)
 - Copy form files to your website
 - Point the form to your Vercel API URL
-
-**Think of it like:** Your website is the front door, and Vercel is the mailbox service. They're separate but work together!
 
 ## Features
 
