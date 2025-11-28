@@ -5,7 +5,7 @@
 // ⚠️ RESEND REQUIRED: The email service abstraction uses Resend.
 // If you want to use a different email service, modify api/shared/email-service.js
 export const EMAIL_CONFIG = {
-  fromEmail: process.env.FROM_EMAIL || 'Your Project <hello@yourdomain.com>',
+  fromEmail: process.env.FROM_EMAIL,
   resendApiKey: process.env.RESEND_API_KEY,
 };
 
@@ -36,14 +36,15 @@ export const APP_CONFIG = {
 };
 
 // CORS configuration
-// Add your domains here - these are the allowed origins for API requests
+// Set allowed origins via CORS_ALLOWED_ORIGINS env var (comma-separated)
+// Example: CORS_ALLOWED_ORIGINS=https://example.com,https://www.example.com
 export const CORS_CONFIG = {
   allowedOrigins: [
-    'https://yourdomain.com',
-    'https://www.yourdomain.com',
+    // Custom domains from environment variable
+    ...(process.env.CORS_ALLOWED_ORIGINS?.split(',').map(s => s.trim()).filter(Boolean) || []),
+    // Local development servers (always allowed)
     'http://localhost:3000',  // Vercel dev server
     'http://localhost:4000',  // Jekyll local dev
-    // Add more domains as needed
   ],
 };
 

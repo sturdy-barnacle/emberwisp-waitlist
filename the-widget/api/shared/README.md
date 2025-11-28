@@ -17,7 +17,7 @@ This directory contains shared modules used by the API endpoints. These modules 
 - Email template style selection (`TEMPLATE_CONFIG`)
 
 **To customize:**
-- **CORS origins:** Edit `CORS_CONFIG.allowedOrigins`
+- **CORS origins:** Set `CORS_ALLOWED_ORIGINS` environment variable (comma-separated domains)
 - **Feature flags:** Edit `FEATURES` object
 - **Rate limits:** Edit `RATE_LIMIT_CONFIG`
 - **Email template style:** Set `EMAIL_TEMPLATE_STYLE` environment variable to `minimal`, `professional`, or `branded`
@@ -70,6 +70,24 @@ This is the **only file you need to modify** to use SendGrid, Mailgun, AWS SES, 
 **To customize:**
 - Usually no changes needed
 - Works automatically with contacts table
+
+### `resend-contacts.js`
+**Resend Contacts API integration** - Syncs contacts to Resend Audience.
+
+**What's here:**
+- `syncContactToResend()` - Add/update contact in Resend Audience
+- `updateResendContact()` - Update existing contact
+- `unsubscribeResendContact()` - Mark contact as unsubscribed
+- `removeResendContact()` - Remove contact from audience
+- `isResendContactsSyncEnabled()` - Check if sync is configured
+
+**To customize:**
+- Set `RESEND_AUDIENCE_ID` environment variable to enable
+- Sync happens automatically on email confirmation and unsubscribe
+
+**Related:**
+- Webhook handler at `api/webhooks/resend.js` receives Resend events
+- Bulk sync script at `scripts/sync-contacts-to-resend.js`
 
 ### `utils.js`
 **Shared utilities** - Common helper functions.

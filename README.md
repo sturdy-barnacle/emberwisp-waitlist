@@ -34,6 +34,7 @@ Simple, tinkerer-friendly, mostly-drop-in waitlist widget built to work on stati
 
 - ✅ **Email validation** and duplicate prevention
 - ✅ **Unified contact system** with deduplication and merging
+- ✅ **Resend Contacts sync** with two-way sync (optional - sync confirmed users to Resend Audience)
 - ✅ **3 email template styles** (minimal/default, professional, branded)
 - ✅ **Logo support** (optional logos for Professional and Branded templates; branded includes placeholder SVG by default)
 - ✅ **Full customization** (colors, content, subjects, preheaders, logos)
@@ -65,27 +66,30 @@ Simple, tinkerer-friendly, mostly-drop-in waitlist widget built to work on stati
                         │  /api/confirm                        │
                         │    ├─ Validate token                 │
                         │    ├─ Mark confirmed (Supabase)      │
-                        │    ├─ Update contact activity        │
+                        │    ├─ Sync to Resend Contacts ←───────── Optional
                         │    └─ Send welcome email (Resend)    │
                         │                                      │
                         │  /api/unsubscribe                    │
                         │    ├─ Validate token/email           │
                         │    ├─ Update unsubscribe status      │
+                        │    ├─ Sync to Resend Contacts ←───────── Optional
                         │    └─ Log activity                   │
+                        │                                      │
+                        │  /api/webhooks/resend  ←───────────────── Optional
+                        │    └─ Receive Resend events          │
+                        │       (bounces, unsubscribes)        │
                         └──────────────────────────────────────┘
                                            │
-                        ┌──────────────────────────────────────┐
-                        │            Database Layer            │
+                        ┌──────────────────┴───────────────────┐
                         │                                      │
-                        │  ┌─────────────┐ ┌─────────────────┐ │
-                        │  │  waitlist   │ │    contacts     │ │
-                        │  │             │ │                 │ │
-                        │  └─────────────┘ └─────────────────┘ │
-                        │                   ┌─────────────────┐ │
-                        │                   │contact_activity │ │
-                        │                   │                 │ │
-                        │                   └─────────────────┘ │
-                        └──────────────────────────────────────┘
+              ┌─────────▼─────────┐              ┌─────────────▼─────────┐
+              │   Database Layer  │              │   Resend Contacts     │
+              │    (Supabase)     │◄────────────►│     (Optional)        │
+              │                   │   Two-way    │                       │
+              │  waitlist         │    sync      │  Audience for         │
+              │  contacts         │              │  marketing emails     │
+              │  contact_activity │              │                       │
+              └───────────────────┘              └───────────────────────┘
 ```
 
 ## Framework Compatibility
@@ -108,11 +112,15 @@ The API is organized into shared modules for easier customization:
 
 - `api/subscribe.js` - Main subscription endpoint
 - `api/confirm.js` - Email confirmation endpoint
+- `api/unsubscribe.js` - Unsubscribe endpoint
+- `api/webhooks/resend.js` - Resend webhook handler (for two-way sync)
 - `api/shared/config.js` - Centralized configuration (CORS, feature flags, etc.)
 - `api/shared/email-service.js` - Email sending abstraction (modify here to use different email service)
+- `api/shared/resend-contacts.js` - Resend Contacts API integration (for syncing to Audience)
 - `api/shared/contacts.js` - Contact management utilities
 - `api/shared/database.js` - Database client initialization
 - `api/shared/utils.js` - Shared utility functions
+- `scripts/sync-contacts-to-resend.js` - Bulk sync script for existing contacts
 
 ### Using with Other Frameworks
 
@@ -182,6 +190,65 @@ The provided API code (`api/subscribe.js` and `api/confirm.js`) **requires Resen
 3. Create an API key → `RESEND_API_KEY`
 
 **Important:** The `FROM_EMAIL` environment variable (set in Step 5) must use an email address from your verified domain. For example, if you verified `yourdomain.com`, you can use `hello@yourdomain.com` or `noreply@yourdomain.com`. Resend will reject emails from unverified domains.
+
+### 2b. Set Up Resend Contacts Sync (Optional)
+
+*Optional but recommended if you want to send marketing emails to confirmed subscribers.*
+
+**What this does:** Syncs confirmed waitlist subscribers to a Resend Audience, enabling two-way sync of subscription preferences (bounces, unsubscribes).
+
+**Sync is automatic once configured.** A manual migration script is available to sync existing contacts from Supabase to Resend (see "Bulk sync existing contacts" below).
+
+| Direction | Trigger | Automatic? |
+|-----------|---------|------------|
+| Supabase → Resend | User confirms email | ✅ Yes |
+| Supabase → Resend | User unsubscribes via your app | ✅ Yes |
+| Resend → Supabase | Bounce/complaint/unsubscribe | ✅ Yes (webhook) |
+| Existing contacts | One-time migration | Manual script |
+
+**Setup:**
+
+1. **Create a Resend Audience:**
+   - Go to [Resend Audiences](https://resend.com/audiences)
+   - Click "Create Audience"
+   - Name it (e.g., "Waitlist Confirmed")
+   - Copy the Audience ID
+
+2. **Add environment variable:**
+   ```bash
+   vercel env add RESEND_AUDIENCE_ID
+   # Paste your Audience ID when prompted
+   ```
+
+3. **Set up webhooks (for two-way sync):**
+   - Go to [Resend Webhooks](https://resend.com/webhooks)
+   - Click "Add Webhook"
+   - Set endpoint URL: `https://your-api.vercel.app/api/webhooks/resend`
+   - Select events: `email.bounced`, `email.complained`, `contact.unsubscribed`
+   - Copy the signing secret
+
+4. **Add webhook secret (recommended):**
+   ```bash
+   vercel env add RESEND_WEBHOOK_SECRET
+   # Paste signing secret when prompted
+   ```
+
+5. **Redeploy:** `vercel --prod`
+
+**How it works:**
+- When a user confirms their email → Added to Resend Audience
+- When a user unsubscribes via your app → Updated in Resend
+- When Resend detects a bounce/complaint → Updated in Supabase
+- All events logged in `contact_activity` table
+
+**Bulk sync existing contacts:**
+```bash
+# Preview what would be synced
+node scripts/sync-contacts-to-resend.js --dry-run
+
+# Sync all confirmed contacts
+node scripts/sync-contacts-to-resend.js
+```
 
 ### 3. Set Up Upstash (Rate Limiting)
 
@@ -262,9 +329,10 @@ The provided API code (`api/subscribe.js` and `api/confirm.js`) **requires Resen
    ```
 
 7. **Configure CORS** (tell the API which domains can use it):
-   - Open `the-widget/api/shared/config.js`
-   - Find the `CORS_CONFIG` section
-   - Replace `yourdomain.com` with your actual website domain(s)
+   ```bash
+   vercel env add CORS_ALLOWED_ORIGINS
+   # Enter comma-separated domains: https://yourdomain.com,https://www.yourdomain.com
+   ```
 
 8. **Deploy to production:**
    ```bash
@@ -286,17 +354,14 @@ The provided API code (`api/subscribe.js` and `api/confirm.js`) **requires Resen
 
 ### 6. Configure CORS
 
-Update `CORS_CONFIG.allowedOrigins` in `api/shared/config.js`:
+Set the `CORS_ALLOWED_ORIGINS` environment variable (comma-separated list of domains):
 
-```js
-export const CORS_CONFIG = {
-  allowedOrigins: [
-  'https://yourdomain.com',
-  'https://www.yourdomain.com',
-    'http://localhost:4000', // Add your domains here
-  ],
-};
+```bash
+vercel env add CORS_ALLOWED_ORIGINS
+# Enter: https://yourdomain.com,https://www.yourdomain.com
 ```
+
+Local development servers (`localhost:3000`, `localhost:4000`) are always allowed automatically.
 
 ### 7. Add to Your Site
 
@@ -431,6 +496,27 @@ Handles email confirmation clicks. Redirects to:
 - `/waitlist-confirmed` on success
 - `/waitlist-error?error=<code>` on failure
 
+### GET /api/unsubscribe?token=xxx
+
+Handles unsubscribe requests. Accepts either `token` (secure) or `email` (fallback). Redirects to:
+- `/unsubscribe-success` on success
+- `/unsubscribe-error?reason=<code>` on failure
+
+### POST /api/webhooks/resend
+
+*Optional - only if Resend Contacts sync is configured.*
+
+Receives webhook events from Resend for two-way sync:
+
+| Event | Action |
+|-------|--------|
+| `email.bounced` | Sets `email_bounced = true` in contacts |
+| `email.complained` | Sets `email_unsubscribed = true` |
+| `contact.unsubscribed` | Sets `email_unsubscribed = true` |
+| `email.delivered/opened/clicked` | Logged to `contact_activity` |
+
+**Response:** `200 OK` with `{ received: true }`
+
 ---
 
 ## Database Schema
@@ -539,26 +625,27 @@ EMAIL_TEMPLATE_STYLE=branded      # Custom brand colors
 </p>
 
 **Template Files**:
-- **Configuration**: `the-widget/templates/config.js` (colors, content, logos)
+- **Configuration**: Environment variables or `the-widget/templates/config.js`
 - **Default templates** (minimal style): `the-widget/templates/`
-- **Style variations**: `the-widget/templates/examples/` (Professional & Branded support logos)
+- **Style variations**: `the-widget/templates/examples/`
 - **Complete guide**: `the-widget/templates/TEMPLATE_README.md`
+
+**Quick customization via environment variables:**
+```bash
+EMAIL_TEMPLATE_STYLE=minimal          # or professional, branded
+EMAIL_PROJECT_NAME=Your Project
+EMAIL_SENDER_NAME=The Team
+EMAIL_PRIMARY_COLOR=#4f46e5
+EMAIL_LOGO_URL=https://yourdomain.com/logo.png
+```
+
+**Or edit `templates/config.js`** for detailed message customization.
 
 **Preview Templates**:
 ```bash
 npm run generate-email-previews
 open example_emails/index.html
 ```
-
-**Quick customization:**
-1. Set `EMAIL_TEMPLATE_STYLE` in your `.env` file
-2. Edit text content in `the-widget/templates/config.js` (project name, colors, messages, logo URL)
-3. For Professional/Branded templates: Set `logoUrl` in `config.js` (recommended 200px max, enforced 250px)
-   - Branded templates show a gradient placeholder logo if `logoUrl` is empty (unless `brandedHeaderTextOnly` is true)
-   - Branded header background: transparent if ANY logo (custom or placeholder), primaryColor if text-only
-   - Professional templates hide the logo if `logoUrl` is empty
-4. Regenerate previews to see changes
-5. Redeploy to Vercel
 
 **For detailed instructions**, see the [Template Editing Guide](the-widget/templates/TEMPLATE_README.md).
 
@@ -674,7 +761,7 @@ See [docs/DATABASE_MERGE_GUIDE.md](docs/DATABASE_MERGE_GUIDE.md) for detailed in
 For common issues and solutions, see the [FAQ](docs/FAQ.md) section.
 
 **Quick fixes:**
-- **CORS errors:** Add your domain to `CORS_CONFIG.allowedOrigins` in `api/shared/config.js` and redeploy
+- **CORS errors:** Add your domain to `CORS_ALLOWED_ORIGINS` environment variable and redeploy
 - **Emails not sending:** Verify domain in Resend, check `FROM_EMAIL` matches
 - **Rate limiting not working:** Check Upstash credentials are set correctly
 - **CAPTCHA always fails:** Ensure site key (frontend) and secret key (backend) are from the same Turnstile widget
