@@ -4,6 +4,7 @@
 import { supabase } from './shared/database.js';
 import { getCorsHeaders, normalizeEmail } from './shared/utils.js';
 import { APP_CONFIG, CORS_CONFIG } from './shared/config.js';
+import { unsubscribeResendContact } from './shared/resend-contacts.js';
 
 export default async function handler(req, res) {
   // Handle CORS
@@ -109,6 +110,30 @@ export default async function handler(req, res) {
       // Activity logging is optional - don't fail the unsubscribe if this fails
       // This can happen if contact_activity table doesn't exist yet
       console.log('Activity logging skipped:', activityError.message);
+    }
+
+    // Sync unsubscribe to Resend Contacts (if configured)
+    try {
+      let emailToSync = null;
+      
+      if (token) {
+        // Get email from token
+        const { data: contact } = await supabase
+          .from('contacts')
+          .select('email')
+          .eq('unsubscribe_token', token)
+          .single();
+        emailToSync = contact?.email;
+      } else if (email) {
+        emailToSync = normalizeEmail(email);
+      }
+      
+      if (emailToSync) {
+        await unsubscribeResendContact(emailToSync);
+      }
+    } catch (resendError) {
+      // Resend sync is optional - don't fail the unsubscribe
+      console.log('Resend unsubscribe sync skipped:', resendError.message);
     }
 
     // Redirect to success page

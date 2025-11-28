@@ -1,11 +1,20 @@
-// API route to serve the local test index page at root URL
-// This makes http://localhost:3000/ show the test hub
+// API route for root URL
+// If MAIN_WEBSITE_URL is set, redirects to main site
+// Otherwise shows local testing hub (for development)
+
+import { APP_CONFIG } from './shared/config.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // If main website URL is configured, redirect there
+  if (APP_CONFIG.mainWebsiteUrl) {
+    return res.redirect(302, APP_CONFIG.mainWebsiteUrl);
+  }
+
+  // Otherwise show local testing hub (development mode)
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>

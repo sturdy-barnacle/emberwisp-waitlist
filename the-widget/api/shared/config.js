@@ -9,6 +9,16 @@ export const EMAIL_CONFIG = {
   resendApiKey: process.env.RESEND_API_KEY,
 };
 
+// Resend Contacts sync configuration
+// Syncs confirmed waitlist subscribers to Resend Audience for marketing emails
+// Set RESEND_AUDIENCE_ID to enable sync (create Audience at https://resend.com/audiences)
+export const RESEND_CONTACTS_CONFIG = {
+  audienceId: process.env.RESEND_AUDIENCE_ID,
+  webhookSecret: process.env.RESEND_WEBHOOK_SECRET,
+  // Feature flag: sync is enabled when audienceId is configured
+  syncEnabled: !!process.env.RESEND_AUDIENCE_ID,
+};
+
 // Database configuration
 export const DATABASE_CONFIG = {
   supabaseUrl: process.env.SUPABASE_URL,
@@ -18,6 +28,7 @@ export const DATABASE_CONFIG = {
 // Application configuration
 export const APP_CONFIG = {
   baseUrl: process.env.BASE_URL || 'https://yourdomain.com',
+  mainWebsiteUrl: process.env.MAIN_WEBSITE_URL || null, // Main site to redirect root URL to
   confirmSuccessUrl: process.env.CONFIRM_SUCCESS_URL || '/waitlist-confirmed',
   confirmErrorUrl: process.env.CONFIRM_ERROR_URL || '/waitlist-error',
   unsubscribeSuccessUrl: process.env.UNSUBSCRIBE_SUCCESS_URL || '/unsubscribe-success',

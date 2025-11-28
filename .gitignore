@@ -57,3 +57,5 @@ generate_email_screenshots_steps.md
 node_modules
 docs/crm_planning.md
 docs/to-fix.md
+.vercel
+.env*.local
