@@ -7,6 +7,7 @@ import {
   updateContactVerifiedByEmail 
 } from './shared/contacts.js';
 import { sendWelcomeEmail } from './shared/email-service.js';
+import { syncContactToResend } from './shared/resend-contacts.js';
 import { APP_CONFIG } from './shared/config.js';
 import { normalizeEmail } from './shared/utils.js';
 
@@ -98,6 +99,26 @@ export default async function handler(req, res) {
     } catch (contactError) {
       // Contacts table might not exist - that's okay, continue
       console.log('Contact update skipped (contacts table may not exist)');
+    }
+
+    // Sync confirmed contact to Resend Audience (if configured)
+    try {
+      const { data: contactData } = await supabase
+        .from('contacts')
+        .select('email, metadata')
+        .eq('email_normalized', normalizeEmail(signup.email))
+        .single();
+      
+      if (contactData) {
+        await syncContactToResend({
+          email: contactData.email,
+          unsubscribed: false,
+          metadata: contactData.metadata || {}
+        });
+      }
+    } catch (syncError) {
+      // Resend sync is optional - don't fail the confirmation
+      console.log('Resend Contacts sync skipped:', syncError.message);
     }
 
     // Send welcome email now that they're confirmed (with unsubscribe token if available)
