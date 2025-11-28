@@ -533,13 +533,13 @@ EMAIL_TEMPLATE_STYLE=branded      # Custom brand colors
 **Template Examples:**
 
 <p align="center">
-  <img src="_example_emails_public/Screenshot%202025-11-27%20at%206.46.07%20PM.png" alt="Email Template Examples - Confirmation" width="600"/>
+  <img src="_example_emails_public/example_confirmation.png" alt="Email Template Examples - Confirmation" width="600"/>
   <br/>
   <em>Confirmation email templates (minimal, professional, branded)</em>
 </p>
 
 <p align="center">
-  <img src="_example_emails_public/Screenshot%202025-11-27%20at%206.46.29%20PM.png" alt="Email Template Examples - Welcome" width="600"/>
+  <img src="_example_emails_public/example_welcome.png" alt="Email Template Examples - Welcome" width="600"/>
   <br/>
   <em>Welcome email templates (minimal, professional, branded)</em>
 </p>
