@@ -449,9 +449,19 @@ Replace `minimal` with the same value as your `EMAIL_TEMPLATE_STYLE` environment
 </html>
 ```
 
-**Note:** The CSS and JavaScript files are automatically loaded by the included files and pages - you don't need to manually add them to your layout. The meta tag is only needed if you want the form to match your email style on pages where users first see it.
+**Optional: Match color too**
 
-**Why this matters:** Without the meta tag, the form will default to `minimal` style on initial pages, but will automatically match your email style when users are redirected from the API (e.g., after clicking confirmation links).
+If you want the form to also match your email's primary color on initial pages (before any redirects), add a color meta tag:
+
+```html
+<meta name="waitlist-color" content="#4f46e5">
+```
+
+Replace `#4f46e5` with your `EMAIL_PRIMARY_COLOR` value from your API environment variables.
+
+**Note:** The CSS and JavaScript files are automatically loaded by the included files and pages - you don't need to manually add them to your layout. The meta tags are only needed if you want the form to match your email style and color on pages where users first see it.
+
+**Why this matters:** Without the meta tags, the form will default to `minimal` style with purple color on initial pages, but will automatically match your email style and color when users are redirected from the API (e.g., after clicking confirmation links).
 
 ---
 

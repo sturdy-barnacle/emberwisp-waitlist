@@ -347,6 +347,24 @@ git commit -m "Accept upstream changes for some-file.html"
 
 **Note:** Branded templates include a gradient placeholder that you can replace with your own logo. Use `brandedHeaderTextOnly: true` if you prefer a text-only header with colored background.
 
+### Button color doesn't match my email primary color
+
+**Automatic matching:** Button and page colors automatically match your `EMAIL_PRIMARY_COLOR` when users are redirected from the API (e.g., after clicking confirmation links).
+
+**For initial pages (before redirects):** If you want the form to match your email color on pages where users first see it, add a meta tag to your layout file:
+
+```html
+<meta name="waitlist-color" content="#4f46e5">
+```
+
+Replace `#4f46e5` with your `EMAIL_PRIMARY_COLOR` value from your API environment variables.
+
+**Troubleshooting:**
+- Make sure `waitlist-style.js` is loaded (check browser DevTools → Network tab)
+- Verify the color format is valid hex (e.g., `#4f46e5`, not `4f46e5` or `rgb(...)`)
+- Check that `EMAIL_PRIMARY_COLOR` is set in your Vercel environment variables
+- After updating the API, redeploy to Vercel so redirects include the color parameter
+
 ### How do I style the form?
 
 The form uses scoped CSS classes (`.waitlist-form__*`) in `assets/waitlist-form.css`.
