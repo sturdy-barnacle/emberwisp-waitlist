@@ -246,7 +246,7 @@ npm install
 
 **What you're doing:** You're copying files from this repository into your Jekyll site so the waitlist form can work. Think of it like adding a new feature to your website.
 
-**Files you need to copy:** 6 files total
+**Files you need to copy:** 8 files total
 
 ---
 
@@ -319,6 +319,12 @@ cp PATH_TO_REPO/the-widget/jekyll/waitlist-confirmed.html .
 
 # 6. Copy the error page (shown if confirmation fails)
 cp PATH_TO_REPO/the-widget/jekyll/waitlist-error.html .
+
+# 7. Copy the unsubscribe success page (shown after successful unsubscribe)
+cp PATH_TO_REPO/the-widget/jekyll/unsubscribe-success.html .
+
+# 8. Copy the unsubscribe error page (shown if unsubscribe fails)
+cp PATH_TO_REPO/the-widget/jekyll/unsubscribe-error.html .
 ```
 
 **Real example:** If your repo is at `~/projects/emberwisp-waitlist`, the commands would be:
@@ -329,13 +335,15 @@ cp ~/projects/emberwisp-waitlist/the-widget/assets/waitlist-form.js assets/
 cp ~/projects/emberwisp-waitlist/the-widget/assets/waitlist-pages.css assets/
 cp ~/projects/emberwisp-waitlist/the-widget/jekyll/waitlist-confirmed.html .
 cp ~/projects/emberwisp-waitlist/the-widget/jekyll/waitlist-error.html .
+cp ~/projects/emberwisp-waitlist/the-widget/jekyll/unsubscribe-success.html .
+cp ~/projects/emberwisp-waitlist/the-widget/jekyll/unsubscribe-error.html .
 ```
 
 **Alternative: Manual Copying**
 If you prefer using your file manager (Finder on Mac, File Explorer on Windows):
 1. Open the repository folder: `the-widget/jekyll/_includes/waitlist-form.html`
 2. Copy it to your Jekyll site's `_includes/` folder
-3. Repeat for all 6 files, putting them in the correct locations as shown above
+3. Repeat for all 8 files, putting them in the correct locations as shown above
 
 **How to verify:** After copying, check that these files exist in your Jekyll site:
 - `_includes/waitlist-form.html` ✅
@@ -344,6 +352,8 @@ If you prefer using your file manager (Finder on Mac, File Explorer on Windows):
 - `assets/waitlist-pages.css` ✅
 - `waitlist-confirmed.html` (in your site's root folder) ✅
 - `waitlist-error.html` (in your site's root folder) ✅
+- `unsubscribe-success.html` (in your site's root folder) ✅
+- `unsubscribe-error.html` (in your site's root folder) ✅
 
 **Important note about confirmation and unsubscribe pages:**
 - These pages must be on **your Jekyll site**, not on the API
@@ -441,6 +451,8 @@ title: Home
 - `assets/waitlist-pages.css` exists
 - `waitlist-confirmed.html` exists in root
 - `waitlist-error.html` exists in root
+- `unsubscribe-success.html` exists in root
+- `unsubscribe-error.html` exists in root
 
 ✅ **Form added to a page:**
 - You added the `{% include waitlist-form.html ... %}` line to at least one page
@@ -609,7 +621,7 @@ Replace `0x4AAAAAAA...` with your actual site key from Cloudflare.
 - Check Resend dashboard → Logs for delivery status
 
 ### Confirmation link doesn't work
-- Make sure `waitlist-confirmed.html` and `waitlist-error.html` are in your site's root folder
+- Make sure `waitlist-confirmed.html`, `waitlist-error.html`, `unsubscribe-success.html`, and `unsubscribe-error.html` are in your site's root folder
 - Check that `BASE_URL` in Vercel matches your site's domain (and is set to Production environment)
 - Verify the confirmation pages are deployed with your site
 

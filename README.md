@@ -12,7 +12,7 @@ Simple, tinkerer-friendly, mostly-drop-in waitlist widget built to work on stati
 
 ## TL;DR: Files to Copy to Your Jekyll Site
 
-Copy these 6 files from this repository to your Jekyll site:
+Copy these 8 files from this repository to your Jekyll site:
 
 | Source File | Destination in Jekyll Site |
 |------------|---------------------------|
@@ -22,6 +22,8 @@ Copy these 6 files from this repository to your Jekyll site:
 | `the-widget/assets/waitlist-pages.css` | `assets/waitlist-pages.css` |
 | `the-widget/jekyll/waitlist-confirmed.html` | Root folder (same level as `_config.yml`) |
 | `the-widget/jekyll/waitlist-error.html` | Root folder (same level as `_config.yml`) |
+| `the-widget/jekyll/unsubscribe-success.html` | Root folder (same level as `_config.yml`) |
+| `the-widget/jekyll/unsubscribe-error.html` | Root folder (same level as `_config.yml`) |
 
 **Quick copy commands** (replace `PATH_TO_REPO` with your repository path):
 ```bash
@@ -31,6 +33,8 @@ cp PATH_TO_REPO/the-widget/assets/waitlist-form.js assets/
 cp PATH_TO_REPO/the-widget/assets/waitlist-pages.css assets/
 cp PATH_TO_REPO/the-widget/jekyll/waitlist-confirmed.html .
 cp PATH_TO_REPO/the-widget/jekyll/waitlist-error.html .
+cp PATH_TO_REPO/the-widget/jekyll/unsubscribe-success.html .
+cp PATH_TO_REPO/the-widget/jekyll/unsubscribe-error.html .
 ```
 
 **Then:**
@@ -300,13 +304,15 @@ The `jekyll/` folder contains ready-to-use components. Adapt as needed for your 
 
 **Quick summary:**
 
-1. **Copy 6 files to your Jekyll site:**
+1. **Copy 8 files to your Jekyll site:**
    - `jekyll/_includes/waitlist-form.html` → `_includes/` (the form component)
    - `assets/waitlist-form.css` → `assets/` (form styling)
    - `assets/waitlist-form.js` → `assets/` (form functionality)
    - `assets/waitlist-pages.css` → `assets/` (confirmation page styling)
    - `jekyll/waitlist-confirmed.html` → your site root (success page)
    - `jekyll/waitlist-error.html` → your site root (error page)
+   - `jekyll/unsubscribe-success.html` → your site root (unsubscribe success page)
+   - `jekyll/unsubscribe-error.html` → your site root (unsubscribe error page)
 
 2. **Add the form to any page:**
    ```liquid
