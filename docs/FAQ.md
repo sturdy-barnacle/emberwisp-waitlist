@@ -349,21 +349,23 @@ git commit -m "Accept upstream changes for some-file.html"
 
 ### Button color doesn't match my email primary color
 
-**Automatic matching:** Button and page colors automatically match your `EMAIL_PRIMARY_COLOR` when users are redirected from the API (e.g., after clicking confirmation links).
-
-**For initial pages (before redirects):** If you want the form to match your email color on pages where users first see it, add a meta tag to your layout file:
+**For landing pages (where form appears before redirects):** The `waitlist-color` meta tag is **required** on any page where users first see the form. Add it to your layout file:
 
 ```html
 <meta name="waitlist-color" content="#4f46e5">
 ```
 
-Replace `#4f46e5` with your `EMAIL_PRIMARY_COLOR` value from your API environment variables.
+Replace `#4f46e5` with your `EMAIL_PRIMARY_COLOR` value from your API environment variables. Without this meta tag, the button will default to purple on landing pages.
+
+**Automatic matching on redirected pages:** Button and page colors automatically match your `EMAIL_PRIMARY_COLOR` when users are redirected from the API (e.g., after clicking confirmation links). No meta tag needed for these pages.
 
 **Troubleshooting:**
+- **Landing page button is purple:** Add the `waitlist-color` meta tag to your layout file (see above)
 - Make sure `waitlist-style.js` is loaded (check browser DevTools → Network tab)
 - Verify the color format is valid hex (e.g., `#4f46e5`, not `4f46e5` or `rgb(...)`)
 - Check that `EMAIL_PRIMARY_COLOR` is set in your Vercel environment variables
 - After updating the API, redeploy to Vercel so redirects include the color parameter
+- Hard refresh your browser (Cmd+Shift+R on Mac, Ctrl+Shift+R on Windows) after adding the meta tag
 
 ### How do I style the form?
 

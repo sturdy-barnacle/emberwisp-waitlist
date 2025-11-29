@@ -414,23 +414,27 @@ title: Home
 
 ---
 
-#### Step 5: (Optional) Match Form Style with Email Style
+#### Step 5: Match Form Style and Color with Email Settings
 
-**What this means:** The waitlist form and pages automatically match your email template style when users are redirected from the API (e.g., after confirming their email). However, if you want the form to match your email style on pages where users first see it (before any redirect), you can add a meta tag.
+**What this means:** The waitlist form and pages automatically match your email template style and color when users are redirected from the API (e.g., after confirming their email). However, on pages where users first see the form (before any redirect), you need to add meta tags to match your email settings.
 
-**How to do it (optional):**
+**Important:** The `waitlist-color` meta tag is **required** on any landing page where the form appears. Without it, the button will default to purple instead of matching your `EMAIL_PRIMARY_COLOR`.
+
+**How to do it:**
 1. Open your site's layout file. This is usually `_layouts/default.html` (the file that wraps around all your pages)
 2. Find the `<head>` section (usually near the top)
-3. Add this meta tag inside the `<head>` section:
+3. Add these meta tags inside the `<head>` section:
 
 ```html
 <meta name="waitlist-style" content="minimal">
+<meta name="waitlist-color" content="#4f46e5">
 ```
 
-Replace `minimal` with the same value as your `EMAIL_TEMPLATE_STYLE` environment variable:
-- `minimal` - Clean, modern sans-serif design (default)
-- `professional` - Elegant serif design
-- `branded` - Branded design with logo support
+- `waitlist-style`: Replace `minimal` with the same value as your `EMAIL_TEMPLATE_STYLE` environment variable:
+  - `minimal` - Clean, modern sans-serif design (default)
+  - `professional` - Elegant serif design
+  - `branded` - Branded design with logo support
+- `waitlist-color`: **Required** - Replace `#4f46e5` with your `EMAIL_PRIMARY_COLOR` value from your API environment variables
 
 **Example of what your layout file might look like:**
 ```html
@@ -439,8 +443,9 @@ Replace `minimal` with the same value as your `EMAIL_TEMPLATE_STYLE` environment
 <head>
   <title>{{ page.title }}</title>
   
-  <!-- Optional: Match form style with email style -->
+  <!-- Match form style and color with email settings -->
   <meta name="waitlist-style" content="minimal">
+  <meta name="waitlist-color" content="#4f46e5">
   
 </head>
 <body>
@@ -449,19 +454,12 @@ Replace `minimal` with the same value as your `EMAIL_TEMPLATE_STYLE` environment
 </html>
 ```
 
-**Optional: Match color too**
+**Note:** The CSS and JavaScript files are automatically loaded by the included files and pages - you don't need to manually add them to your layout.
 
-If you want the form to also match your email's primary color on initial pages (before any redirects), add a color meta tag:
-
-```html
-<meta name="waitlist-color" content="#4f46e5">
-```
-
-Replace `#4f46e5` with your `EMAIL_PRIMARY_COLOR` value from your API environment variables.
-
-**Note:** The CSS and JavaScript files are automatically loaded by the included files and pages - you don't need to manually add them to your layout. The meta tags are only needed if you want the form to match your email style and color on pages where users first see it.
-
-**Why this matters:** Without the meta tags, the form will default to `minimal` style with purple color on initial pages, but will automatically match your email style and color when users are redirected from the API (e.g., after clicking confirmation links).
+**Why this matters:** 
+- **On landing pages:** The meta tags ensure your form matches your email style and color immediately
+- **On redirected pages:** The API automatically passes style and color via URL parameters, so meta tags aren't needed
+- **Without meta tags:** Landing pages will default to `minimal` style with purple color, which won't match your email branding
 
 ---
 
