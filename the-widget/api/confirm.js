@@ -8,7 +8,7 @@ import {
 } from './shared/contacts.js';
 import { sendWelcomeEmail } from './shared/email-service.js';
 import { syncContactToResend } from './shared/resend-contacts.js';
-import { APP_CONFIG } from './shared/config.js';
+import { APP_CONFIG, TEMPLATE_CONFIG } from './shared/config.js';
 import { normalizeEmail } from './shared/utils.js';
 
 export default async function handler(req, res) {
@@ -18,9 +18,10 @@ export default async function handler(req, res) {
   }
 
   const { token } = req.query;
+  const style = TEMPLATE_CONFIG.emailStyle || 'minimal';
 
   if (!token) {
-    return res.redirect(302, `${APP_CONFIG.confirmErrorUrl}?error=missing_token`);
+    return res.redirect(302, `${APP_CONFIG.confirmErrorUrl}?error=missing_token&style=${style}`);
   }
 
   try {
@@ -32,17 +33,17 @@ export default async function handler(req, res) {
       .single();
 
     if (findError || !signup) {
-      return res.redirect(302, `${APP_CONFIG.confirmErrorUrl}?error=invalid_token`);
+      return res.redirect(302, `${APP_CONFIG.confirmErrorUrl}?error=invalid_token&style=${style}`);
     }
 
     // Check if already confirmed
     if (signup.confirmed) {
-      return res.redirect(302, `${APP_CONFIG.confirmSuccessUrl}?status=already_confirmed`);
+      return res.redirect(302, `${APP_CONFIG.confirmSuccessUrl}?status=already_confirmed&style=${style}`);
     }
 
     // Check if token expired
     if (signup.token_expires_at && new Date(signup.token_expires_at) < new Date()) {
-      return res.redirect(302, `${APP_CONFIG.confirmErrorUrl}?error=expired_token`);
+      return res.redirect(302, `${APP_CONFIG.confirmErrorUrl}?error=expired_token&style=${style}`);
     }
 
     // Confirm the signup
@@ -59,7 +60,7 @@ export default async function handler(req, res) {
 
     if (updateError) {
       console.error('Supabase update error:', updateError);
-      return res.redirect(302, `${APP_CONFIG.confirmErrorUrl}?error=update_failed`);
+      return res.redirect(302, `${APP_CONFIG.confirmErrorUrl}?error=update_failed&style=${style}`);
     }
 
     // Update contact email_verified status and get unsubscribe token if contacts table exists
@@ -124,11 +125,14 @@ export default async function handler(req, res) {
     // Send welcome email now that they're confirmed (with unsubscribe token if available)
     await sendWelcomeEmail(signup.email, unsubscribeToken);
 
-    // Redirect to success page
-    return res.redirect(302, APP_CONFIG.confirmSuccessUrl);
+    // Redirect to success page with style parameter
+    const successUrl = APP_CONFIG.confirmSuccessUrl.includes('?') 
+      ? `${APP_CONFIG.confirmSuccessUrl}&style=${style}`
+      : `${APP_CONFIG.confirmSuccessUrl}?style=${style}`;
+    return res.redirect(302, successUrl);
 
   } catch (error) {
     console.error('Confirmation error:', error);
-    return res.redirect(302, `${APP_CONFIG.confirmErrorUrl}?error=server_error`);
+    return res.redirect(302, `${APP_CONFIG.confirmErrorUrl}?error=server_error&style=${style}`);
   }
 }

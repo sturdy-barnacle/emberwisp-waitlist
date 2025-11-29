@@ -12,7 +12,7 @@ Simple, tinkerer-friendly, mostly-drop-in waitlist widget built to work on stati
 
 ## TL;DR: Files to Copy to Your Jekyll Site
 
-Copy these 8 files from this repository to your Jekyll site:
+Copy these 9 files from this repository to your Jekyll site:
 
 | Source File | Destination in Jekyll Site |
 |------------|---------------------------|
@@ -20,6 +20,7 @@ Copy these 8 files from this repository to your Jekyll site:
 | `the-widget/assets/waitlist-form.css` | `assets/waitlist-form.css` |
 | `the-widget/assets/waitlist-form.js` | `assets/waitlist-form.js` |
 | `the-widget/assets/waitlist-pages.css` | `assets/waitlist-pages.css` |
+| `the-widget/assets/waitlist-style.js` | `assets/waitlist-style.js` |
 | `the-widget/jekyll/waitlist-confirmed.html` | Root folder (same level as `_config.yml`) |
 | `the-widget/jekyll/waitlist-error.html` | Root folder (same level as `_config.yml`) |
 | `the-widget/jekyll/unsubscribe-success.html` | Root folder (same level as `_config.yml`) |
@@ -31,6 +32,7 @@ cp PATH_TO_REPO/the-widget/jekyll/_includes/waitlist-form.html _includes/
 cp PATH_TO_REPO/the-widget/assets/waitlist-form.css assets/
 cp PATH_TO_REPO/the-widget/assets/waitlist-form.js assets/
 cp PATH_TO_REPO/the-widget/assets/waitlist-pages.css assets/
+cp PATH_TO_REPO/the-widget/assets/waitlist-style.js assets/
 cp PATH_TO_REPO/the-widget/jekyll/waitlist-confirmed.html .
 cp PATH_TO_REPO/the-widget/jekyll/waitlist-error.html .
 cp PATH_TO_REPO/the-widget/jekyll/unsubscribe-success.html .
@@ -39,13 +41,13 @@ cp PATH_TO_REPO/the-widget/jekyll/unsubscribe-error.html .
 
 **Then:**
 1. Add the form to any page: `{% include waitlist-form.html api_url="https://your-api.vercel.app/api/subscribe" %}`
-2. Load CSS/JS in your layout file (`_layouts/default.html`):
+2. (Optional) Add a meta tag to your layout to match form style with email style:
+   ```html
+   <meta name="waitlist-style" content="minimal">
+   ```
+   Use `minimal`, `professional`, or `branded` to match your `EMAIL_TEMPLATE_STYLE` setting. If omitted, pages will automatically use the style from API redirects, and the form defaults to `minimal`.
 
-``` 
-<link rel="stylesheet" href="{{ '/assets/waitlist-form.css' | relative_url }}">
-<link rel="stylesheet" href="{{ '/assets/waitlist-pages.css' | relative_url }}">
-<script src="{{ '/assets/waitlist-form.js' | relative_url }}"></script>
-```
+3. The CSS/JS files are already loaded in the included files and pages - no additional setup needed!
 ---
 
 ## FYI
@@ -304,11 +306,12 @@ The `jekyll/` folder contains ready-to-use components. Adapt as needed for your 
 
 **Quick summary:**
 
-1. **Copy 8 files to your Jekyll site:**
+1. **Copy 9 files to your Jekyll site:**
    - `jekyll/_includes/waitlist-form.html` → `_includes/` (the form component)
    - `assets/waitlist-form.css` → `assets/` (form styling)
    - `assets/waitlist-form.js` → `assets/` (form functionality)
    - `assets/waitlist-pages.css` → `assets/` (confirmation page styling)
+   - `assets/waitlist-style.js` → `assets/` (automatic style matching)
    - `jekyll/waitlist-confirmed.html` → your site root (success page)
    - `jekyll/waitlist-error.html` → your site root (error page)
    - `jekyll/unsubscribe-success.html` → your site root (unsubscribe success page)
@@ -320,12 +323,13 @@ The `jekyll/` folder contains ready-to-use components. Adapt as needed for your 
    ```
    Replace `your-waitlist-api.vercel.app` with your actual Vercel API URL.
 
-3. **Load CSS/JS in your layout file** (`_layouts/default.html`):
+3. **(Optional) Match form style with email style** - Add to your layout file (`_layouts/default.html`):
    ```html
-   <link rel="stylesheet" href="{{ '/assets/waitlist-form.css' | relative_url }}">
-   <link rel="stylesheet" href="{{ '/assets/waitlist-pages.css' | relative_url }}">
-   <script src="{{ '/assets/waitlist-form.js' | relative_url }}"></script>
+   <meta name="waitlist-style" content="minimal">
    ```
+   Use `minimal`, `professional`, or `branded` to match your `EMAIL_TEMPLATE_STYLE`. If omitted, pages automatically use the style from API redirects, and the form defaults to `minimal`.
+
+**Note:** CSS/JS files are automatically loaded by the included files and pages - no manual setup needed!
 
 **Advanced options:**
 

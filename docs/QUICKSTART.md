@@ -319,16 +319,19 @@ cp PATH_TO_REPO/the-widget/assets/waitlist-form.js assets/
 # 4. Copy the pages CSS (this styles the confirmation pages)
 cp PATH_TO_REPO/the-widget/assets/waitlist-pages.css assets/
 
-# 5. Copy the success page (shown after email confirmation)
+# 5. Copy the style script (automatically matches email template style)
+cp PATH_TO_REPO/the-widget/assets/waitlist-style.js assets/
+
+# 6. Copy the success page (shown after email confirmation)
 cp PATH_TO_REPO/the-widget/jekyll/waitlist-confirmed.html .
 
-# 6. Copy the error page (shown if confirmation fails)
+# 7. Copy the error page (shown if confirmation fails)
 cp PATH_TO_REPO/the-widget/jekyll/waitlist-error.html .
 
-# 7. Copy the unsubscribe success page (shown after successful unsubscribe)
+# 8. Copy the unsubscribe success page (shown after successful unsubscribe)
 cp PATH_TO_REPO/the-widget/jekyll/unsubscribe-success.html .
 
-# 8. Copy the unsubscribe error page (shown if unsubscribe fails)
+# 9. Copy the unsubscribe error page (shown if unsubscribe fails)
 cp PATH_TO_REPO/the-widget/jekyll/unsubscribe-error.html .
 ```
 
@@ -338,6 +341,7 @@ cp ~/projects/emberwisp-waitlist/the-widget/jekyll/_includes/waitlist-form.html 
 cp ~/projects/emberwisp-waitlist/the-widget/assets/waitlist-form.css assets/
 cp ~/projects/emberwisp-waitlist/the-widget/assets/waitlist-form.js assets/
 cp ~/projects/emberwisp-waitlist/the-widget/assets/waitlist-pages.css assets/
+cp ~/projects/emberwisp-waitlist/the-widget/assets/waitlist-style.js assets/
 cp ~/projects/emberwisp-waitlist/the-widget/jekyll/waitlist-confirmed.html .
 cp ~/projects/emberwisp-waitlist/the-widget/jekyll/waitlist-error.html .
 cp ~/projects/emberwisp-waitlist/the-widget/jekyll/unsubscribe-success.html .
@@ -348,15 +352,18 @@ cp ~/projects/emberwisp-waitlist/the-widget/jekyll/unsubscribe-error.html .
 If you prefer using your file manager (Finder on Mac, File Explorer on Windows):
 1. Open the repository folder: `the-widget/jekyll/_includes/waitlist-form.html`
 2. Copy it to your Jekyll site's `_includes/` folder
-3. Repeat for all 8 files, putting them in the correct locations as shown above
+3. Repeat for all 9 files, putting them in the correct locations as shown above
 
 **How to verify:** After copying, check that these files exist in your Jekyll site:
 - `_includes/waitlist-form.html` ✅
 - `assets/waitlist-form.css` ✅
 - `assets/waitlist-form.js` ✅
 - `assets/waitlist-pages.css` ✅
+- `assets/waitlist-style.js` ✅
 - `waitlist-confirmed.html` (in your site's root folder) ✅
 - `waitlist-error.html` (in your site's root folder) ✅
+- `unsubscribe-success.html` (in your site's root folder) ✅
+- `unsubscribe-error.html` (in your site's root folder) ✅
 - `unsubscribe-success.html` (in your site's root folder) ✅
 - `unsubscribe-error.html` (in your site's root folder) ✅
 
@@ -407,20 +414,23 @@ title: Home
 
 ---
 
-#### Step 5: Load the CSS and JavaScript
+#### Step 5: (Optional) Match Form Style with Email Style
 
-**What this means:** Your site needs to load the CSS (styling) and JavaScript (functionality) files for the form to work and look good.
+**What this means:** The waitlist form and pages automatically match your email template style when users are redirected from the API (e.g., after confirming their email). However, if you want the form to match your email style on pages where users first see it (before any redirect), you can add a meta tag.
 
-**How to do it:**
+**How to do it (optional):**
 1. Open your site's layout file. This is usually `_layouts/default.html` (the file that wraps around all your pages)
 2. Find the `<head>` section (usually near the top)
-3. Add these three lines inside the `<head>` section, before the closing `</head>` tag:
+3. Add this meta tag inside the `<head>` section:
 
 ```html
-<link rel="stylesheet" href="{{ '/assets/waitlist-form.css' | relative_url }}">
-<link rel="stylesheet" href="{{ '/assets/waitlist-pages.css' | relative_url }}">
-<script src="{{ '/assets/waitlist-form.js' | relative_url }}"></script>
+<meta name="waitlist-style" content="minimal">
 ```
+
+Replace `minimal` with the same value as your `EMAIL_TEMPLATE_STYLE` environment variable:
+- `minimal` - Clean, modern sans-serif design (default)
+- `professional` - Elegant serif design
+- `branded` - Branded design with logo support
 
 **Example of what your layout file might look like:**
 ```html
@@ -429,10 +439,8 @@ title: Home
 <head>
   <title>{{ page.title }}</title>
   
-  <!-- Add these three lines here: -->
-  <link rel="stylesheet" href="{{ '/assets/waitlist-form.css' | relative_url }}">
-  <link rel="stylesheet" href="{{ '/assets/waitlist-pages.css' | relative_url }}">
-  <script src="{{ '/assets/waitlist-form.js' | relative_url }}"></script>
+  <!-- Optional: Match form style with email style -->
+  <meta name="waitlist-style" content="minimal">
   
 </head>
 <body>
@@ -441,7 +449,9 @@ title: Home
 </html>
 ```
 
-**Why this matters:** Without these lines, the form won't have styling (will look broken) and won't work (won't submit emails).
+**Note:** The CSS and JavaScript files are automatically loaded by the included files and pages - you don't need to manually add them to your layout. The meta tag is only needed if you want the form to match your email style on pages where users first see it.
+
+**Why this matters:** Without the meta tag, the form will default to `minimal` style on initial pages, but will automatically match your email style when users are redirected from the API (e.g., after clicking confirmation links).
 
 ---
 
@@ -454,6 +464,7 @@ title: Home
 - `assets/waitlist-form.css` exists
 - `assets/waitlist-form.js` exists
 - `assets/waitlist-pages.css` exists
+- `assets/waitlist-style.js` exists
 - `waitlist-confirmed.html` exists in root
 - `waitlist-error.html` exists in root
 - `unsubscribe-success.html` exists in root
