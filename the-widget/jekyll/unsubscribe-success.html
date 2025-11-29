@@ -3,82 +3,21 @@ layout: default
 title: "Unsubscribed Successfully"
 ---
 
-<div class="waitlist-page">
-  <div class="waitlist-container">
-    <div class="waitlist-content">
-      <h1>✅ Unsubscribed Successfully</h1>
-      
-      <p>You have been successfully unsubscribed from our email list.</p>
-      
-      <p>You will no longer receive emails from us. If you change your mind, you can always sign up again using our waitlist form.</p>
-      
-      <div class="waitlist-actions">
-        <a href="/" class="waitlist-button secondary">← Back to Home</a>
-      </div>
+<link rel="stylesheet" href="{{ '/assets/waitlist-pages.css' | relative_url }}">
+<script src="{{ '/assets/waitlist-style.js' | relative_url }}"></script>
+
+<div class="confirmation-page">
+  <div class="confirmation-card">
+    <div class="confirmation-icon">✅</div>
+    <h1>Unsubscribed Successfully</h1>
+    
+    <p>You have been successfully unsubscribed from our email list.</p>
+    
+    <p>You will no longer receive emails from us. If you change your mind, you can always sign up again using our waitlist form.</p>
+    
+    <div class="waitlist-actions">
+      <a href="/" class="confirmation-button">← Back to Home</a>
     </div>
   </div>
 </div>
 
-<style>
-.waitlist-page {
-  min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1rem;
-}
-
-.waitlist-container {
-  max-width: 500px;
-  width: 100%;
-}
-
-.waitlist-content {
-  text-align: center;
-  padding: 2rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
-}
-
-.waitlist-content h1 {
-  color: #28a745;
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
-}
-
-.waitlist-content p {
-  color: #6c757d;
-  margin-bottom: 1rem;
-  line-height: 1.6;
-}
-
-.waitlist-actions {
-  margin-top: 2rem;
-}
-
-.waitlist-button {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  background: #007bff;
-  color: white;
-  text-decoration: none;
-  border-radius: 4px;
-  font-weight: 500;
-  transition: background-color 0.2s;
-}
-
-.waitlist-button:hover {
-  background: #0056b3;
-  color: white;
-  text-decoration: none;
-}
-
-.waitlist-button.secondary {
-  background: #6c757d;
-}
-
-.waitlist-button.secondary:hover {
-  background: #545b62;
-}
-</style>

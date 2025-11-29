@@ -1,4 +1,21 @@
 /* Shared styles for waitlist confirmation and error pages */
+/* Uses CSS variables that are set by waitlist-style.js based on email template style */
+
+/* CSS variable defaults (fallback if script doesn't load) */
+:root {
+  --waitlist-primary-color: #4f46e5;
+  --waitlist-primary-color-hover: #4338ca;
+  --waitlist-text-color: #333;
+  --waitlist-heading-color: #111;
+  --waitlist-secondary-text-color: #666;
+  --waitlist-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --waitlist-border-radius: 0.5rem;
+  --waitlist-button-border-radius: 0.5rem;
+  --waitlist-button-padding: 0.75rem 1.5rem;
+  --waitlist-font-weight: 500;
+  --waitlist-heading-font-weight: 700;
+  --waitlist-line-height: 1.6;
+}
 
 /* Shared page layout */
 .confirmation-page,
@@ -8,6 +25,7 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  font-family: var(--waitlist-font-family);
 }
 
 /* Shared card styles */
@@ -36,20 +54,21 @@
 .error-card h1 {
   font-size: 1.75rem;
   margin-bottom: 1rem;
-  color: #111;
+  color: var(--waitlist-heading-color);
+  font-weight: var(--waitlist-heading-font-weight);
 }
 
 .confirmation-card p,
 .error-card p {
-  color: #666;
+  color: var(--waitlist-text-color);
   margin-bottom: 0.75rem;
-  line-height: 1.6;
+  line-height: var(--waitlist-line-height);
 }
 
 /* Error page specific list styles */
 .error-card ul {
   text-align: left;
-  color: #666;
+  color: var(--waitlist-secondary-text-color);
   margin: 1rem 0;
   padding-left: 1.5rem;
 }
@@ -63,25 +82,33 @@
 .error-button {
   display: inline-block;
   margin-top: 1.5rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #4f46e5;
+  padding: var(--waitlist-button-padding);
+  background-color: var(--waitlist-primary-color);
   color: white;
   text-decoration: none;
-  border-radius: 0.5rem;
-  font-weight: 500;
+  border-radius: var(--waitlist-button-border-radius);
+  font-weight: var(--waitlist-font-weight);
   transition: background-color 0.15s;
 }
 
 .confirmation-button:hover,
 .error-button:hover {
-  background-color: #4338ca;
+  background-color: var(--waitlist-primary-color-hover);
+}
+
+/* Error page specific styling */
+.error-card h1 {
+  color: #dc3545; /* Error red - keep consistent across styles */
 }
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
-  .confirmation-card h1,
-  .error-card h1 {
+  .confirmation-card h1 {
     color: #f9fafb;
+  }
+  
+  .error-card h1 {
+    color: #fca5a5; /* Lighter red for dark mode */
   }
   
   .confirmation-card p,

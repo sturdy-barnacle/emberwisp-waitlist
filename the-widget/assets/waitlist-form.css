@@ -1,6 +1,23 @@
+/* CSS variable defaults (fallback if script doesn't load) */
+:root {
+  --waitlist-primary-color: #4f46e5;
+  --waitlist-primary-color-hover: #4338ca;
+  --waitlist-text-color: #333;
+  --waitlist-heading-color: #111;
+  --waitlist-secondary-text-color: #666;
+  --waitlist-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --waitlist-border-radius: 0.5rem;
+  --waitlist-button-border-radius: 0.5rem;
+  --waitlist-button-padding: 0.75rem 1.5rem;
+  --waitlist-font-weight: 500;
+  --waitlist-heading-font-weight: 700;
+  --waitlist-line-height: 1.6;
+}
+
 .waitlist-form {
   max-width: 480px;
   margin: 0 auto;
+  font-family: var(--waitlist-font-family);
 }
 
 .waitlist-form__form {
@@ -21,24 +38,25 @@
   padding: 0.75rem 1rem;
   font-size: 1rem;
   border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
+  border-radius: var(--waitlist-border-radius);
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
+  color: var(--waitlist-text-color);
 }
 
 .waitlist-form__input:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  border-color: var(--waitlist-primary-color);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
 .waitlist-form__button {
-  padding: 0.75rem 1.5rem;
+  padding: var(--waitlist-button-padding);
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: var(--waitlist-font-weight);
   color: white;
-  background-color: #4f46e5;
+  background-color: var(--waitlist-primary-color);
   border: none;
-  border-radius: 0.5rem;
+  border-radius: var(--waitlist-button-border-radius);
   cursor: pointer;
   transition: background-color 0.15s;
   display: flex;
@@ -48,7 +66,7 @@
 }
 
 .waitlist-form__button:hover:not(:disabled) {
-  background-color: #4338ca;
+  background-color: var(--waitlist-primary-color-hover);
 }
 
 .waitlist-form__button:disabled {
@@ -98,8 +116,8 @@
   }
   
   .waitlist-form__input:focus {
-    border-color: #818cf8;
-    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+    border-color: var(--waitlist-primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
   }
 }
 
