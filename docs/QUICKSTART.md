@@ -143,8 +143,19 @@ npm install
 
 4. **Optional values (can leave as-is or blank):**
    - Email branding (`EMAIL_PROJECT_NAME`, `EMAIL_PRIMARY_COLOR`, `EMAIL_LOGO_URL`, `EMAIL_BRANDED_TEXT_ONLY`, etc.) - can leave as-is, has defaults
+   - SPAM compliance (`EMAIL_SENDER_ADDRESS`, `EMAIL_ADVERTISEMENT_DISCLOSURE`) - see note below
    - Optional features (`RESEND_AUDIENCE_ID`, `TURNSTILE_SECRET_KEY`, `UPSTASH_*`, etc.) - leave blank if not using
    - Redirect URLs - can leave as-is, rarely need to change
+
+   **SPAM Compliance Note:**
+   - `EMAIL_SENDER_ADDRESS` - **REQUIRED for marketing emails** (CAN-SPAM Act). Set your physical postal address (street address, P.O. Box, or private mailbox). Example: `"123 Main St, City, State 12345"`
+   - `EMAIL_ADVERTISEMENT_DISCLOSURE` - Optional, only needed if you customize emails to be promotional. Default waitlist emails are transactional/relationship-based and don't need this.
+
+   **GDPR Compliance Note:**
+   - `EMAIL_PRIVACY_POLICY_URL` - **Recommended for GDPR compliance**. Set your privacy policy URL. This will:
+     - Add a privacy policy link to email footers
+     - Enable a consent checkbox in the waitlist form (when privacy policy URL is provided to the form include)
+   - Example: `EMAIL_PRIVACY_POLICY_URL=https://yourdomain.com/privacy`
 
 5. **Save the file**
 
@@ -396,6 +407,12 @@ If you prefer using your file manager (Finder on Mac, File Explorer on Windows):
 ```liquid
 {% include waitlist-form.html api_url="https://my-waitlist-xyz789.vercel.app/api/subscribe" %}
 ```
+
+**Optional: Add privacy policy (enables consent checkbox for GDPR compliance):**
+```liquid
+{% include waitlist-form.html api_url="https://your-api.vercel.app/api/subscribe" privacy_policy_url="https://yourdomain.com/privacy" %}
+```
+When you provide a `privacy_policy_url`, a consent checkbox will appear in the form requiring users to agree to your privacy policy before submitting.
 
 **Where to put it:** You can put this line anywhere in your page's content. For example, in `index.html`:
 ```html

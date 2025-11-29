@@ -82,12 +82,101 @@ function buildVariables(additionalVars = {}) {
     brandedHeaderBgColor = 'transparent'; // Transparent background when using placeholder logo (it's still a logo)
   }
   
+  // Build compliance footer HTML (for confirmation emails - address + privacy policy)
+  let addressFooterHtml = '';
+  const hasAddress = emailConfig.senderAddress && emailConfig.senderAddress.trim() !== '';
+  const hasPrivacyPolicy = emailConfig.privacyPolicyUrl && emailConfig.privacyPolicyUrl.trim() !== '';
+  
+  if (hasAddress || hasPrivacyPolicy) {
+    let footerContent = '';
+    
+    if (hasAddress) {
+      // Convert newlines in address to <br> tags for HTML display
+      const addressWithBreaks = emailConfig.senderAddress.replace(/\n/g, '<br>');
+      footerContent += `<div style="font-size: 12px; color: ${emailConfig.secondaryTextColor}; margin-bottom: ${hasPrivacyPolicy ? '12px' : '0'};">
+        ${addressWithBreaks}
+      </div>`;
+    }
+    
+    if (hasPrivacyPolicy) {
+      footerContent += `<div style="font-size: 12px; color: ${emailConfig.secondaryTextColor};">
+        <a href="${emailConfig.privacyPolicyUrl}" style="color: ${emailConfig.primaryColor}; text-decoration: underline;">Privacy Policy</a>
+      </div>`;
+    }
+    
+    addressFooterHtml = `<div style="font-size: 12px; color: ${emailConfig.secondaryTextColor}; margin-top: 24px; padding-top: 24px; border-top: 1px solid #e5e7eb;">
+      ${footerContent}
+    </div>`;
+  }
+  
+  // Build compliance footer HTML (for welcome emails - disclosure + address + privacy policy)
+  let complianceFooterHtml = '';
+  const hasDisclosure = emailConfig.advertisementDisclosure && emailConfig.advertisementDisclosure.trim() !== '';
+  const hasAddress = emailConfig.senderAddress && emailConfig.senderAddress.trim() !== '';
+  const hasPrivacyPolicy = emailConfig.privacyPolicyUrl && emailConfig.privacyPolicyUrl.trim() !== '';
+  
+  if (hasDisclosure || hasAddress || hasPrivacyPolicy) {
+    let footerContent = '';
+    
+    if (hasDisclosure) {
+      footerContent += `<div style="font-size: 12px; color: ${emailConfig.secondaryTextColor}; margin-bottom: ${hasAddress || hasPrivacyPolicy ? '16px' : '0'};">
+        ${emailConfig.advertisementDisclosure}
+      </div>`;
+    }
+    
+    if (hasAddress) {
+      // Convert newlines in address to <br> tags for HTML display
+      const addressWithBreaks = emailConfig.senderAddress.replace(/\n/g, '<br>');
+      footerContent += `<div style="font-size: 12px; color: ${emailConfig.secondaryTextColor}; margin-bottom: ${hasPrivacyPolicy ? '12px' : '0'};">
+        ${addressWithBreaks}
+      </div>`;
+    }
+    
+    if (hasPrivacyPolicy) {
+      footerContent += `<div style="font-size: 12px; color: ${emailConfig.secondaryTextColor};">
+        <a href="${emailConfig.privacyPolicyUrl}" style="color: ${emailConfig.primaryColor}; text-decoration: underline;">Privacy Policy</a>
+      </div>`;
+    }
+    
+    complianceFooterHtml = `<div style="font-size: 12px; color: ${emailConfig.secondaryTextColor}; margin-top: 48px; padding-top: 24px; border-top: 1px solid #e5e7eb;">
+      ${footerContent}
+    </div>`;
+  }
+  
+  // Build text versions for plain text emails
+  let addressFooterText = '';
+  if (hasAddress || hasPrivacyPolicy) {
+    if (hasAddress) {
+      addressFooterText += `\n\n${emailConfig.senderAddress}`;
+    }
+    if (hasPrivacyPolicy) {
+      addressFooterText += `\n\nPrivacy Policy: ${emailConfig.privacyPolicyUrl}`;
+    }
+  }
+  
+  let complianceFooterText = '';
+  if (hasDisclosure || hasAddress || hasPrivacyPolicy) {
+    if (hasDisclosure) {
+      complianceFooterText += `\n\n${emailConfig.advertisementDisclosure}`;
+    }
+    if (hasAddress) {
+      complianceFooterText += `\n${emailConfig.senderAddress}`;
+    }
+    if (hasPrivacyPolicy) {
+      complianceFooterText += `\n\nPrivacy Policy: ${emailConfig.privacyPolicyUrl}`;
+    }
+  }
+  
   return {
     ...emailConfig,
     unsubscribeUrl,
     logoHtml, // Professional template: Logo above content (empty if no logoUrl)
     logoHeaderHtml, // Branded template: Logo in header (image or placeholder)
     brandedHeaderBgColor, // Branded template: Header background color (transparent if any logo, primaryColor if text-only)
+    addressFooterHtml, // Confirmation email: Address footer (empty if no address)
+    complianceFooterHtml, // Welcome email: Disclosure + address footer (empty if neither set)
+    addressFooterText, // Confirmation email: Address footer text version
+    complianceFooterText, // Welcome email: Disclosure + address footer text version
     ...additionalVars,
   };
 }

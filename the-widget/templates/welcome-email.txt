@@ -7,7 +7,7 @@
 {{welcomeFeedbackMessage}}
 
 {{welcomeSignature}}
-{{senderName}}
+{{senderName}}{{complianceFooterText}}
 
 ---
 {{unsubscribeFooter}}

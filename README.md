@@ -95,7 +95,8 @@ Could you use _just_ Supabase for both subscriber info and rate limiting? Techni
 - ✅ **Logo support** (optional logos for Professional and Branded templates; branded includes placeholder SVG by default)
 - ✅ **Full customization** (colors, content, subjects, preheaders, logos)
 - ✅ **Email preview system** for testing templates
-- ✅ **Unsubscribe compliance** (CAN-SPAM, GDPR compliant unsubscribe links)
+- ✅ **SPAM compliance** (CAN-SPAM, GDPR: unsubscribe links, physical address, optional advertisement disclosure)
+- ✅ **GDPR compliance** (privacy policy links in emails and form, consent checkbox) - Note: Data deletion/export endpoints not yet implemented
 - ✅ **Welcome emails** via **Resend** (required - see note below)
 - ✅ **Rate limiting** via Upstash Redis (optional)
 - ✅ **CAPTCHA** via Cloudflare Turnstile (optional)
@@ -351,9 +352,14 @@ The `jekyll/` folder contains ready-to-use components. Adapt as needed for your 
    {% include waitlist-form.html api_url="https://your-api.vercel.app/api/subscribe" turnstile_site_key="0x4AAAAAAA..." %}
    ```
 
+   **With privacy policy (enables consent checkbox for GDPR compliance):**
+   ```liquid
+   {% include waitlist-form.html api_url="https://your-api.vercel.app/api/subscribe" privacy_policy_url="https://yourdomain.com/privacy" %}
+   ```
+
    **All options:**
    ```liquid
-   {% include waitlist-form.html api_url="https://your-api.vercel.app/api/subscribe" source="landing" turnstile_site_key="0x4AAAAAAA..." %}
+   {% include waitlist-form.html api_url="https://your-api.vercel.app/api/subscribe" source="landing" turnstile_site_key="0x4AAAAAAA..." privacy_policy_url="https://yourdomain.com/privacy" %}
    ```
 
 **For other frameworks:**
@@ -619,6 +625,13 @@ EMAIL_SENDER_NAME=The Team
 EMAIL_PRIMARY_COLOR=#4f46e5
 EMAIL_LOGO_URL=https://yourdomain.com/logo.png
 EMAIL_BRANDED_TEXT_ONLY=true         # For branded templates: show text header instead of logo
+
+# SPAM Compliance (CAN-SPAM Act requirements)
+EMAIL_SENDER_ADDRESS="123 Main St, City, State 12345"  # REQUIRED for marketing emails
+EMAIL_ADVERTISEMENT_DISCLOSURE=                        # Optional: only if emails are promotional
+
+# GDPR Compliance (Recommended)
+EMAIL_PRIVACY_POLICY_URL=https://yourdomain.com/privacy  # Privacy policy link in emails and form
 ```
 
 **Or edit `templates/config.js`** for detailed message customization.
@@ -631,15 +644,35 @@ open example_emails/index.html
 
 **For detailed instructions**, see the [Template Editing Guide](the-widget/templates/TEMPLATE_README.md).
 
-### Unsubscribe Compliance
+### SPAM Compliance
 
-**⚖️ Legal Compliance**: All welcome emails include unsubscribe links to comply with CAN-SPAM Act and GDPR requirements.
+**⚖️ Legal Compliance**: All emails include required elements to comply with CAN-SPAM Act and GDPR requirements.
+
+**Required elements:**
+1. **Unsubscribe links** - All welcome emails include functional unsubscribe links
+2. **Physical postal address** - Required for commercial emails (set via `EMAIL_SENDER_ADDRESS`)
+3. **Advertisement disclosure** - Optional, only needed if emails are promotional (set via `EMAIL_ADVERTISEMENT_DISCLOSURE`)
 
 **How it works:**
 1. **Secure tokens**: Each contact gets a unique unsubscribe token for secure unsubscribe links
 2. **One-click unsubscribe**: Users can unsubscribe via `/api/unsubscribe?token=...` or `/api/unsubscribe?email=...`
 3. **Activity tracking**: Unsubscribe events are logged in the contact activity timeline
 4. **Success/error pages**: Users see appropriate feedback after unsubscribe attempts
+5. **Physical address**: Automatically included in email footers when `EMAIL_SENDER_ADDRESS` is set
+6. **Advertisement disclosure**: Automatically included in welcome emails when `EMAIL_ADVERTISEMENT_DISCLOSURE` is set
+
+**Configuration:**
+```bash
+# REQUIRED for marketing emails (CAN-SPAM Act)
+EMAIL_SENDER_ADDRESS="123 Main St, City, State 12345"
+# Can be street address, P.O. Box, or private mailbox
+# Multi-line addresses supported (use \n for line breaks)
+
+# Optional - only if emails are promotional
+EMAIL_ADVERTISEMENT_DISCLOSURE="This email is an advertisement."
+# Leave blank if emails are transactional/relationship-based
+# Default waitlist emails are NOT promotional
+```
 
 **Customization:**
 ```javascript
@@ -648,7 +681,57 @@ unsubscribeText: "Unsubscribe from these emails",
 unsubscribeFooter: "You're receiving this email because you're subscribed to our emails. You can unsubscribe at any time.",
 ```
 
-**Note:** The default unsubscribe message is generic and works seamlessly with both waitlist and future CRM features (newsletters, product updates, etc.).
+**Note:** The default unsubscribe message is generic and works seamlessly with both waitlist and future CRM features (newsletters, product updates, etc.). Physical address appears in both confirmation and welcome emails when configured.
+
+### GDPR Compliance
+
+**⚖️ Legal Compliance**: Additional GDPR compliance features for transparency and consent.
+
+**Features:**
+1. **Privacy policy links** - Automatically included in email footers when configured
+2. **Consent checkbox** - Optional consent checkbox in waitlist form (appears when privacy policy URL is provided)
+
+**Configuration:**
+```bash
+# Privacy policy URL (recommended for GDPR compliance)
+EMAIL_PRIVACY_POLICY_URL=https://yourdomain.com/privacy
+# Will appear in email footers and enable consent checkbox in form
+```
+
+**How it works:**
+1. **Email footers**: Privacy policy link automatically appears in both confirmation and welcome emails when `EMAIL_PRIVACY_POLICY_URL` is set
+2. **Form consent**: When privacy policy URL is provided to the form, a consent checkbox appears requiring users to agree before submitting
+3. **Conditional display**: Both features only appear when the privacy policy URL is configured
+
+**Form usage:**
+```liquid
+{% include waitlist-form.html 
+   api_url="https://your-api.vercel.app/api/subscribe" 
+   privacy_policy_url="https://yourdomain.com/privacy" %}
+```
+
+**Note:** Privacy policy links and consent checkboxes are optional but recommended for GDPR compliance, especially if you serve EU users. The privacy policy content itself must be created by you - this widget only provides the link/checkbox infrastructure.
+
+**⚠️ Important: GDPR Data Deletion Not Yet Implemented**
+
+The widget currently provides:
+- ✅ Privacy policy links (transparency)
+- ✅ Consent checkboxes (explicit consent)
+- ✅ Unsubscribe functionality (marketing opt-out)
+
+**Not yet implemented:**
+- ❌ GDPR "Right to be Forgotten" (data deletion endpoint)
+- ❌ GDPR "Data Portability" (data export endpoint)
+
+**If users request data deletion:**
+You must handle deletion requests manually. See [docs/GDPR_DATA_ENDPOINTS_SCOPE.md](docs/GDPR_DATA_ENDPOINTS_SCOPE.md) for implementation guidance. The scope document outlines what needs to be built, but the endpoints are not yet implemented.
+
+**Manual deletion options:**
+- Delete records directly in Supabase dashboard
+- Use SQL queries to anonymize data
+- Remove from Resend Contacts manually (if synced)
+
+For full GDPR compliance, you may need to implement deletion/export endpoints or handle requests manually until they are built.
 
 **Database fields:**
 - `contacts.email_unsubscribed` - Boolean flag

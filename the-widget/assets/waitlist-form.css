@@ -107,6 +107,41 @@
   color: #2563eb;
 }
 
+.waitlist-form__consent {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.waitlist-form__consent-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: var(--waitlist-secondary-text-color);
+  line-height: 1.5;
+}
+
+.waitlist-form__consent-checkbox {
+  margin-top: 0.125rem;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: var(--waitlist-primary-color);
+}
+
+.waitlist-form__consent-text {
+  flex: 1;
+}
+
+.waitlist-form__privacy-link {
+  color: var(--waitlist-primary-color);
+  text-decoration: underline;
+  transition: opacity 0.15s;
+}
+
+.waitlist-form__privacy-link:hover {
+  opacity: 0.8;
+}
+
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .waitlist-form__input {
@@ -118,6 +153,10 @@
   .waitlist-form__input:focus {
     border-color: var(--waitlist-primary-color);
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+  }
+  
+  .waitlist-form__consent-label {
+    color: #d1d5db;
   }
 }
 

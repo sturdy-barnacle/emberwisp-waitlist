@@ -44,5 +44,16 @@ export const emailConfig = {
   // Unsubscribe configuration
   unsubscribeText: "Unsubscribe from these emails",
   unsubscribeFooter: "You're receiving this email because you're subscribed to our emails. You can unsubscribe at any time.",
+  
+  // SPAM Compliance (CAN-SPAM Act requirements)
+  // Physical postal address - REQUIRED for marketing emails
+  // Can be street address, P.O. Box, or private mailbox
+  senderAddress: process.env.EMAIL_SENDER_ADDRESS || "",
+  // Advertisement disclosure - optional, only if emails are promotional
+  advertisementDisclosure: process.env.EMAIL_ADVERTISEMENT_DISCLOSURE || "",
+  
+  // GDPR Compliance
+  // Privacy policy URL - recommended for GDPR compliance
+  privacyPolicyUrl: process.env.EMAIL_PRIVACY_POLICY_URL || "",
 };
 

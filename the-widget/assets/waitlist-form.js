@@ -7,14 +7,24 @@
   const API_URL = formContainer?.dataset.apiUrl || form.dataset.apiUrl || 'https://your-waitlist-api.vercel.app/api/subscribe';
   const SOURCE = formContainer?.dataset.source || form.dataset.source || 'website';
   const TURNSTILE_SITE_KEY = formContainer?.dataset.turnstileSiteKey || form.dataset.turnstileSiteKey || '';
+  const PRIVACY_POLICY_URL = formContainer?.dataset.privacyPolicyUrl || form.dataset.privacyPolicyUrl || '';
 
   const emailInput = document.getElementById('waitlist-email');
   const submitBtn = document.getElementById('waitlist-submit');
   const buttonText = submitBtn?.querySelector('.waitlist-form__button-text');
   const buttonLoading = submitBtn?.querySelector('.waitlist-form__button-loading');
   const message = document.getElementById('waitlist-message');
+  const consentContainer = document.getElementById('waitlist-consent');
+  const consentCheckbox = document.getElementById('waitlist-consent-checkbox');
+  const privacyLink = document.getElementById('waitlist-privacy-link');
 
   if (!emailInput || !submitBtn || !message) return;
+
+  // Setup privacy policy and consent checkbox
+  if (PRIVACY_POLICY_URL && consentContainer && privacyLink) {
+    privacyLink.href = PRIVACY_POLICY_URL;
+    consentContainer.style.display = 'block';
+  }
 
   let turnstileToken = null;
   let turnstileWidgetId = null;
@@ -78,6 +88,12 @@
     const email = emailInput.value.trim();
     if (!email) return;
 
+    // Check consent checkbox if privacy policy is provided
+    if (PRIVACY_POLICY_URL && consentCheckbox && !consentCheckbox.checked) {
+      showMessage('Please agree to the Privacy Policy to continue.', 'error');
+      return;
+    }
+
     // Check captcha if enabled
     if (TURNSTILE_SITE_KEY && !turnstileToken) {
       showMessage('Please complete the captcha verification.', 'error');
@@ -113,6 +129,11 @@
           showMessage(data.message || "You're on the list!", 'success');
         }
         emailInput.value = '';
+        
+        // Reset consent checkbox if present
+        if (consentCheckbox) {
+          consentCheckbox.checked = false;
+        }
         
         // Track signup event
         if (typeof gtag !== 'undefined') {
