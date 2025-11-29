@@ -41,11 +41,15 @@ cp PATH_TO_REPO/the-widget/jekyll/unsubscribe-error.html .
 
 **Then:**
 1. Add the form to any page: `{% include waitlist-form.html api_url="https://your-api.vercel.app/api/subscribe" %}`
-2. (Optional) Add a meta tag to your layout to match form style with email style:
+2. (Optional) Add meta tags to your layout to match form style and color with email settings:
    ```html
    <meta name="waitlist-style" content="minimal">
+   <meta name="waitlist-color" content="#4f46e5">
    ```
-   Use `minimal`, `professional`, or `branded` to match your `EMAIL_TEMPLATE_STYLE` setting. If omitted, pages will automatically use the style from API redirects, and the form defaults to `minimal`.
+   - `waitlist-style`: Use `minimal`, `professional`, or `branded` to match your `EMAIL_TEMPLATE_STYLE` setting
+   - `waitlist-color`: Use your `EMAIL_PRIMARY_COLOR` value (e.g., `#4f46e5`)
+   
+   If omitted, pages will automatically use the style and color from API redirects, and the form defaults to `minimal` style with purple color.
 
 3. The CSS/JS files are already loaded in the included files and pages - no additional setup needed!
 ---
@@ -323,11 +327,15 @@ The `jekyll/` folder contains ready-to-use components. Adapt as needed for your 
    ```
    Replace `your-waitlist-api.vercel.app` with your actual Vercel API URL.
 
-3. **(Optional) Match form style with email style** - Add to your layout file (`_layouts/default.html`):
+3. **(Optional) Match form style and color with email settings** - Add to your layout file (`_layouts/default.html`):
    ```html
    <meta name="waitlist-style" content="minimal">
+   <meta name="waitlist-color" content="#4f46e5">
    ```
-   Use `minimal`, `professional`, or `branded` to match your `EMAIL_TEMPLATE_STYLE`. If omitted, pages automatically use the style from API redirects, and the form defaults to `minimal`.
+   - `waitlist-style`: Use `minimal`, `professional`, or `branded` to match your `EMAIL_TEMPLATE_STYLE`
+   - `waitlist-color`: Use your `EMAIL_PRIMARY_COLOR` value (e.g., `#4f46e5`)
+   
+   If omitted, pages automatically use the style and color from API redirects, and the form defaults to `minimal` style with purple color.
 
 **Note:** CSS/JS files are automatically loaded by the included files and pages - no manual setup needed!
 

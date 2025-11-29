@@ -4,6 +4,7 @@
 import { supabase } from './shared/database.js';
 import { getCorsHeaders, normalizeEmail } from './shared/utils.js';
 import { APP_CONFIG, CORS_CONFIG, TEMPLATE_CONFIG } from './shared/config.js';
+import { emailConfig } from '../templates/config.js';
 import { unsubscribeResendContact } from './shared/resend-contacts.js';
 
 export default async function handler(req, res) {
@@ -23,9 +24,10 @@ export default async function handler(req, res) {
 
   const { token, email } = req.query;
   const style = TEMPLATE_CONFIG.emailStyle || 'minimal';
+  const primaryColor = encodeURIComponent(emailConfig.primaryColor);
 
   if (!token && !email) {
-    return res.redirect(`${APP_CONFIG.baseUrl}${APP_CONFIG.unsubscribeErrorUrl}?reason=missing-params&style=${style}`);
+    return res.redirect(`${APP_CONFIG.baseUrl}${APP_CONFIG.unsubscribeErrorUrl}?reason=missing-params&style=${style}&color=${primaryColor}`);
   }
 
   try {
@@ -57,7 +59,7 @@ export default async function handler(req, res) {
 
     if (updateResult.error) {
       console.error('Unsubscribe error:', updateResult.error);
-      return res.redirect(`${APP_CONFIG.baseUrl}${APP_CONFIG.unsubscribeErrorUrl}?reason=database-error&style=${style}`);
+      return res.redirect(`${APP_CONFIG.baseUrl}${APP_CONFIG.unsubscribeErrorUrl}?reason=database-error&style=${style}&color=${primaryColor}`);
     }
 
     // Log the unsubscribe activity to contact_activity table
@@ -137,15 +139,15 @@ export default async function handler(req, res) {
       console.log('Resend unsubscribe sync skipped:', resendError.message);
     }
 
-    // Redirect to success page with style parameter
+    // Redirect to success page with style and color parameters
     const successUrl = `${APP_CONFIG.baseUrl}${APP_CONFIG.unsubscribeSuccessUrl}`;
-    const successUrlWithStyle = successUrl.includes('?') 
-      ? `${successUrl}&style=${style}`
-      : `${successUrl}?style=${style}`;
-    res.redirect(successUrlWithStyle);
+    const successUrlWithParams = successUrl.includes('?') 
+      ? `${successUrl}&style=${style}&color=${primaryColor}`
+      : `${successUrl}?style=${style}&color=${primaryColor}`;
+    res.redirect(successUrlWithParams);
 
   } catch (error) {
     console.error('Unsubscribe handler error:', error);
-    res.redirect(`${APP_CONFIG.baseUrl}${APP_CONFIG.unsubscribeErrorUrl}?reason=server-error&style=${style}`);
+    res.redirect(`${APP_CONFIG.baseUrl}${APP_CONFIG.unsubscribeErrorUrl}?reason=server-error&style=${style}&color=${primaryColor}`);
   }
 }
