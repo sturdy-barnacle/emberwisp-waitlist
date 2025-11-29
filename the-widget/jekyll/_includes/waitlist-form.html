@@ -18,6 +18,9 @@
   
   With custom API URL:
     {% include waitlist-form.html api_url="https://your-api.vercel.app/api/subscribe" %}
+  
+  With privacy policy URL (for GDPR compliance):
+    {% include waitlist-form.html privacy_policy_url="https://yourdomain.com/privacy" %}
 {% endraw %}
 -->
 
@@ -28,7 +31,8 @@
 <div class="waitlist-form" id="waitlist-form"
      data-api-url="{{ include.api_url | default: 'https://your-waitlist-api.vercel.app/api/subscribe' }}"
      data-source="{{ include.source | default: 'website' }}"
-     {% if include.turnstile_site_key %}data-turnstile-site-key="{{ include.turnstile_site_key }}"{% endif %}>
+     {% if include.turnstile_site_key %}data-turnstile-site-key="{{ include.turnstile_site_key }}"{% endif %}
+     {% if include.privacy_policy_url %}data-privacy-policy-url="{{ include.privacy_policy_url }}"{% endif %}>
   <form id="waitlist-signup" class="waitlist-form__form">
     <div class="waitlist-form__input-group">
       <input 
@@ -57,6 +61,16 @@
     <!-- Load Turnstile script -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     {% endif %}
+    
+    <!-- Privacy Policy and Consent (shown if privacy_policy_url is provided) -->
+    <div id="waitlist-consent" class="waitlist-form__consent" style="display: none;">
+      <label class="waitlist-form__consent-label">
+        <input type="checkbox" id="waitlist-consent-checkbox" required class="waitlist-form__consent-checkbox">
+        <span class="waitlist-form__consent-text">
+          I agree to the <a href="#" id="waitlist-privacy-link" target="_blank" rel="noopener noreferrer" class="waitlist-form__privacy-link">Privacy Policy</a>
+        </span>
+      </label>
+    </div>
     
     <p class="waitlist-form__message" id="waitlist-message"></p>
   </form>

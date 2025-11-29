@@ -438,7 +438,15 @@ See the main [README.md](../README.md) for framework-specific instructions.
 
 If you customize the API to use a different email service, the database continues to work fine.
 
-## Unsubscribe & Compliance
+## SPAM Compliance & Unsubscribe
+
+### Do emails comply with CAN-SPAM Act?
+
+**Yes!** All emails include required compliance elements:
+
+1. **Unsubscribe links** - All welcome emails include functional unsubscribe links
+2. **Physical postal address** - Required for commercial emails (set via `EMAIL_SENDER_ADDRESS`)
+3. **Advertisement disclosure** - Optional, only if emails are promotional (set via `EMAIL_ADVERTISEMENT_DISCLOSURE`)
 
 ### Do emails include unsubscribe links?
 
@@ -459,6 +467,85 @@ unsubscribeFooter: "You're receiving this email because you're subscribed to our
 
 **Note:** The default message is generic and works for waitlist, newsletters, and all future CRM email types.
 
+### Do I need to include a physical address in emails?
+
+**Yes, for marketing/commercial emails.** CAN-SPAM Act requires a physical postal address in commercial emails.
+
+**How to set it:**
+```bash
+EMAIL_SENDER_ADDRESS="123 Main St, City, State 12345"
+```
+
+**Options:**
+- Street address
+- P.O. Box
+- Private mailbox
+
+**Where it appears:**
+- Confirmation emails (recommended for consistency)
+- Welcome emails (required for marketing emails)
+
+**Multi-line addresses:** Use `\n` for line breaks:
+```bash
+EMAIL_SENDER_ADDRESS="123 Main St\nCity, State 12345"
+```
+
+### Do I need an advertisement disclosure?
+
+**Only if emails are promotional.** Default waitlist emails are transactional/relationship-based and don't need it.
+
+**When to set it:**
+- If you customize emails to include promotional content
+- If you send marketing emails to the waitlist later
+
+**How to set it:**
+```bash
+EMAIL_ADVERTISEMENT_DISCLOSURE="This email is an advertisement."
+```
+
+**Note:** Leave blank if emails are transactional or relationship-based (default waitlist emails).
+
+### Do I need a privacy policy link?
+
+**Recommended for GDPR compliance**, especially if you serve EU users.
+
+**What it does:**
+- Adds privacy policy link to email footers (confirmation and welcome emails)
+- Enables consent checkbox in waitlist form (when privacy policy URL is provided)
+
+**How to set it:**
+```bash
+EMAIL_PRIVACY_POLICY_URL=https://yourdomain.com/privacy
+```
+
+**Form usage:**
+```liquid
+{% include waitlist-form.html 
+   api_url="https://your-api.vercel.app/api/subscribe" 
+   privacy_policy_url="https://yourdomain.com/privacy" %}
+```
+
+**Note:** You must create your own privacy policy content - this widget only provides the link/checkbox infrastructure. The privacy policy link appears in emails automatically when `EMAIL_PRIVACY_POLICY_URL` is set. The consent checkbox appears in the form when `privacy_policy_url` is provided to the form include.
+
+### How does the consent checkbox work?
+
+**When enabled:** The consent checkbox appears in the waitlist form when you provide a `privacy_policy_url` parameter to the form include.
+
+**How it works:**
+- Checkbox is required before form submission
+- Links to your privacy policy (opens in new tab)
+- Only appears when privacy policy URL is provided
+- Styled to match your form design
+
+**Usage:**
+```liquid
+{% include waitlist-form.html 
+   api_url="https://your-api.vercel.app/api/subscribe" 
+   privacy_policy_url="https://yourdomain.com/privacy" %}
+```
+
+**Note:** The consent checkbox is optional but recommended for GDPR compliance. It provides explicit consent for data processing, which is required in some jurisdictions.
+
 ### What happens when someone unsubscribes?
 
 1. **Database update**: `email_unsubscribed` flag is set to `true`
@@ -469,6 +556,84 @@ unsubscribeFooter: "You're receiving this email because you're subscribed to our
 ### Can users resubscribe after unsubscribing?
 
 Currently, users would need to sign up again through the waitlist form.
+
+### How do I handle GDPR data deletion requests?
+
+**⚠️ Data deletion endpoints are not yet implemented.** You must handle deletion requests manually.
+
+**What's currently available:**
+- ✅ Unsubscribe from marketing emails (automatic)
+- ✅ Privacy policy links (transparency)
+- ✅ Consent checkboxes (explicit consent)
+
+**What's not yet implemented:**
+- ❌ Automatic data deletion endpoint (`/api/delete-data`)
+- ❌ Data export endpoint (`/api/export-data`)
+
+**Manual deletion options:**
+
+1. **Via Supabase Dashboard:**
+   - Go to Table Editor → `contacts` table
+   - Find the user by email
+   - Delete the contact record (cascades to waitlist entries and activity logs)
+
+2. **Via SQL (Supabase SQL Editor):**
+   ```sql
+   -- Delete contact and all related data
+   DELETE FROM contacts WHERE email = 'user@example.com';
+   -- This will cascade delete waitlist entries and activity logs
+   ```
+
+3. **Anonymize instead of delete (for analytics):**
+   ```sql
+   -- Anonymize email while keeping analytics
+   UPDATE contacts 
+   SET email = 'deleted_' || encode(digest(email || gen_random_uuid()::text, 'sha256'), 'hex'),
+       email_normalized = 'deleted_' || encode(digest(email_normalized || gen_random_uuid()::text, 'sha256'), 'hex'),
+       unsubscribe_token = NULL,
+       metadata = '{}'::jsonb
+   WHERE email = 'user@example.com';
+   ```
+
+4. **Remove from Resend Contacts (if synced):**
+   - Go to Resend dashboard → Audiences
+   - Find and remove the contact manually
+
+**Implementation guidance:**
+See [docs/GDPR_DATA_ENDPOINTS_SCOPE.md](GDPR_DATA_ENDPOINTS_SCOPE.md) for a complete implementation plan. The document outlines what needs to be built, but the endpoints are not yet implemented.
+
+**For active customers:**
+If the user is an active customer in your SaaS system, see [docs/WAITLIST_SAAS_SYNC_DELETION.md](WAITLIST_SAAS_SYNC_DELETION.md) for guidance on handling partial vs. full deletion.
+
+### How do I handle GDPR data export requests?
+
+**⚠️ Data export endpoint is not yet implemented.** You must handle export requests manually.
+
+**Manual export options:**
+
+1. **Via Supabase Dashboard:**
+   - Go to Table Editor → `contacts` table
+   - Find the user by email
+   - Export the contact data
+   - Export related waitlist entries
+   - Export activity logs
+
+2. **Via SQL (Supabase SQL Editor):**
+   ```sql
+   -- Export all user data
+   SELECT 
+     c.*,
+     json_agg(w.*) as waitlist_entries,
+     json_agg(a.*) as activity_log
+   FROM contacts c
+   LEFT JOIN waitlist w ON w.contact_id = c.id
+   LEFT JOIN contact_activity a ON a.contact_id = c.id
+   WHERE c.email = 'user@example.com'
+   GROUP BY c.id;
+   ```
+
+**Implementation guidance:**
+See [docs/GDPR_DATA_ENDPOINTS_SCOPE.md](GDPR_DATA_ENDPOINTS_SCOPE.md) for implementation details. The endpoint is scoped but not yet built.
 
 ## Still Have Questions?
 

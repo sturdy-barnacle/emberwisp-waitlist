@@ -60,3 +60,5 @@ docs/c*g.md
 docs/to-fix.md
 .vercel
 .env*.local
+GDPR_DATA_ENDPOINTS_SCOPE.md
+WAITLIST_SAAS_SYNC_DELETION.md
