@@ -46,6 +46,10 @@ cp PATH_TO_REPO/the-widget/jekyll/unsubscribe-error.html .
 <link rel="stylesheet" href="{{ '/assets/waitlist-pages.css' | relative_url }}">
 <script src="{{ '/assets/waitlist-form.js' | relative_url }}"></script>
 ```
+
+**Then:**
+Go to [docs/QUICKSTART.md](docs/QUICKSTART.md) and follow the instructions to set up the API.
+
 ---
 
 ## FYI
