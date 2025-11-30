@@ -2,6 +2,8 @@
 
 This guide covers merging multiple waitlist databases and handling duplicate contacts.
 
+**Last updated:** November 30, 2025
+
 ## Common Scenarios
 
 ### Scenario 1: Merging Two Separate Databases
@@ -309,6 +311,107 @@ SELECT * FROM public.import_external_contacts('[
 2. **Rebuild stats** - Refresh materialized views
 3. **Test functionality** - Verify waitlist still works
 4. **Clean up** - Remove temporary data/functions if needed
+5. **Sync to Resend** - If using Resend Contacts sync, sync merged contacts (see below)
+
+## Syncing to Resend Contacts After Merge
+
+If you're using the optional Resend Contacts sync feature, you'll need to sync your merged contacts to Resend Audience. This ensures your Resend Audience stays in sync with your Supabase database after merging.
+
+### Prerequisites
+
+**1. Audience ID Required**
+
+You **must** specify a Resend Audience ID before syncing contacts. This is done via the `RESEND_AUDIENCE_ID` environment variable:
+
+```bash
+RESEND_AUDIENCE_ID=your-audience-id-here
+```
+
+To get your Audience ID:
+1. Go to [resend.com/audiences](https://resend.com/audiences)
+2. Create an Audience (or select an existing one)
+3. Copy the Audience ID from the dashboard
+
+**2. Custom Properties Must Be Created First**
+
+**Important:** If you want to sync custom properties (beyond `firstName` and `lastName`), you **must** create these properties in the Resend dashboard **before** attempting to sync contacts via the API.
+
+**Steps to create custom properties:**
+1. Go to [resend.com/audiences](https://resend.com/audiences)
+2. Click on your Audience
+3. Navigate to **Properties** tab
+4. Click **Add Property**
+5. Configure the property:
+   - **Key**: Alphanumeric and underscores only, up to 50 characters (e.g., `company_name`, `signup_source`)
+   - **Type**: String or Number
+   - **Fallback Value**: Optional default value
+6. Save the property
+
+**Why this matters:** Resend will reject API requests that include properties that don't exist in the dashboard. Only `email`, `firstName`, `lastName`, and `unsubscribed` are available by default. All other properties must be pre-created.
+
+### Syncing Merged Contacts
+
+After merging databases, use the bulk sync script to sync all confirmed, non-bounced, non-unsubscribed contacts to Resend:
+
+```bash
+# From the-widget directory
+cd the-widget
+
+# Preview what would be synced (dry run)
+node scripts/sync-contacts-to-resend.js --dry-run
+
+# Sync all eligible contacts
+node scripts/sync-contacts-to-resend.js
+```
+
+**What gets synced:**
+- Only contacts where `email_verified = true`
+- Only contacts where `email_bounced = false`
+- Only contacts where `email_unsubscribed = false`
+- Contacts are synced with:
+  - `email` (required)
+  - `firstName` from `metadata.first_name` (if available)
+  - `lastName` from `metadata.last_name` (if available)
+  - `unsubscribed = false` (for confirmed contacts)
+
+**Custom properties:**
+If you've created custom properties in the Resend dashboard, you can extend the sync script to include them. The current implementation only syncs `firstName` and `lastName`. To sync additional properties:
+
+1. Create the properties in Resend dashboard first (see above)
+2. Modify `the-widget/scripts/sync-contacts-to-resend.js` to include properties in the `resend.contacts.create()` call:
+   ```javascript
+   const { data, error } = await resend.contacts.create({
+     audienceId: AUDIENCE_ID,
+     email: contact.email,
+     firstName: contact.metadata?.first_name || '',
+     lastName: contact.metadata?.last_name || '',
+     unsubscribed: false,
+     properties: {
+       company_name: contact.metadata?.company_name || '',
+       signup_source: contact.metadata?.source || '',
+       // Add other custom properties here
+     },
+   });
+   ```
+
+**Note:** The same property creation requirement applies to the automatic sync in `api/shared/resend-contacts.js`. If you modify that file to include custom properties, ensure they exist in the Resend dashboard first.
+
+### Troubleshooting Sync Issues
+
+**Error: "Property X does not exist"**
+- **Solution:** Create the property in Resend dashboard first (see "Custom Properties Must Be Created First" above)
+
+**Error: "Audience ID is required"**
+- **Solution:** Set `RESEND_AUDIENCE_ID` environment variable with your Audience ID
+
+**Contacts not syncing:**
+- Check that contacts meet sync criteria (`email_verified = true`, not bounced, not unsubscribed)
+- Verify `RESEND_API_KEY` is set correctly
+- Check script output for specific error messages
+
+**Duplicate contacts in Resend:**
+- Resend will automatically handle duplicates if a contact already exists
+- The sync script will show "Already exists" for contacts that are already in the Audience
 
 ## Recovery
 
