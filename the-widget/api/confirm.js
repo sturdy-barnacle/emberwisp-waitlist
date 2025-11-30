@@ -23,7 +23,7 @@ export default async function handler(req, res) {
   const primaryColor = encodeURIComponent(emailConfig.primaryColor);
 
   if (!token) {
-    return res.redirect(302, `${APP_CONFIG.confirmErrorUrl}?error=missing_token&style=${style}&color=${primaryColor}`);
+    return res.redirect(302, `${APP_CONFIG.baseUrl}${APP_CONFIG.confirmErrorUrl}?error=missing_token&style=${style}&color=${primaryColor}`);
   }
 
   try {
@@ -35,17 +35,17 @@ export default async function handler(req, res) {
       .single();
 
     if (findError || !signup) {
-      return res.redirect(302, `${APP_CONFIG.confirmErrorUrl}?error=invalid_token&style=${style}&color=${primaryColor}`);
+      return res.redirect(302, `${APP_CONFIG.baseUrl}${APP_CONFIG.confirmErrorUrl}?error=invalid_token&style=${style}&color=${primaryColor}`);
     }
 
     // Check if already confirmed
     if (signup.confirmed) {
-      return res.redirect(302, `${APP_CONFIG.confirmSuccessUrl}?status=already_confirmed&style=${style}&color=${primaryColor}`);
+      return res.redirect(302, `${APP_CONFIG.baseUrl}${APP_CONFIG.confirmSuccessUrl}?status=already_confirmed&style=${style}&color=${primaryColor}`);
     }
 
     // Check if token expired
     if (signup.token_expires_at && new Date(signup.token_expires_at) < new Date()) {
-      return res.redirect(302, `${APP_CONFIG.confirmErrorUrl}?error=expired_token&style=${style}&color=${primaryColor}`);
+      return res.redirect(302, `${APP_CONFIG.baseUrl}${APP_CONFIG.confirmErrorUrl}?error=expired_token&style=${style}&color=${primaryColor}`);
     }
 
     // Confirm the signup
@@ -62,7 +62,7 @@ export default async function handler(req, res) {
 
     if (updateError) {
       console.error('Supabase update error:', updateError);
-      return res.redirect(302, `${APP_CONFIG.confirmErrorUrl}?error=update_failed&style=${style}&color=${primaryColor}`);
+      return res.redirect(302, `${APP_CONFIG.baseUrl}${APP_CONFIG.confirmErrorUrl}?error=update_failed&style=${style}&color=${primaryColor}`);
     }
 
     // Update contact email_verified status and get unsubscribe token if contacts table exists
@@ -128,13 +128,14 @@ export default async function handler(req, res) {
     await sendWelcomeEmail(signup.email, unsubscribeToken);
 
     // Redirect to success page with style and color parameters
-    const successUrl = APP_CONFIG.confirmSuccessUrl.includes('?') 
-      ? `${APP_CONFIG.confirmSuccessUrl}&style=${style}&color=${primaryColor}`
-      : `${APP_CONFIG.confirmSuccessUrl}?style=${style}&color=${primaryColor}`;
-    return res.redirect(302, successUrl);
+    const successUrl = `${APP_CONFIG.baseUrl}${APP_CONFIG.confirmSuccessUrl}`;
+    const successUrlWithParams = successUrl.includes('?') 
+      ? `${successUrl}&style=${style}&color=${primaryColor}`
+      : `${successUrl}?style=${style}&color=${primaryColor}`;
+    return res.redirect(302, successUrlWithParams);
 
   } catch (error) {
     console.error('Confirmation error:', error);
-    return res.redirect(302, `${APP_CONFIG.confirmErrorUrl}?error=server_error&style=${style}&color=${primaryColor}`);
+    return res.redirect(302, `${APP_CONFIG.baseUrl}${APP_CONFIG.confirmErrorUrl}?error=server_error&style=${style}&color=${primaryColor}`);
   }
 }
