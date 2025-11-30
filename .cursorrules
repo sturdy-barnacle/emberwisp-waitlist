@@ -1,0 +1,280 @@
+# Cursor Rules for Emberwisp Waitlist Widget
+
+## Project Overview
+This is a production-ready waitlist signup system with a unified contacts system, email templates, and GDPR/CAN-SPAM compliance. The API is deployed to Vercel as serverless functions, while the frontend components can be integrated into any static site framework.
+
+## Technology Stack
+- **Runtime**: Node.js with ES modules (`"type": "module"`)
+- **Platform**: Vercel serverless functions
+- **Database**: Supabase (PostgreSQL)
+- **Email Service**: Resend (required - hardcoded in email-service.js)
+- **Rate Limiting**: Upstash Redis (optional)
+- **CAPTCHA**: Cloudflare Turnstile (optional)
+- **Frontend**: Vanilla JavaScript, CSS, HTML (framework-agnostic)
+- **Static Site**: Jekyll (reference implementation)
+
+## Code Style & Conventions
+
+### JavaScript/Node.js
+- Use ES6 modules (`import`/`export`) - never use CommonJS `require()`
+- Use `camelCase` for functions, variables, and object properties
+- Use `UPPER_SNAKE_CASE` for constants and environment variables
+- Use `PascalCase` only for classes (if any)
+- Always use `const` unless reassignment is needed, then use `let` - never use `var`
+- Use async/await for asynchronous operations - avoid `.then()` chains
+- Use arrow functions for callbacks and short functions
+- Use template literals for string interpolation
+- Add JSDoc comments for exported functions with `@param` and `@returns` tags
+
+### File Organization
+- API endpoints go in `the-widget/api/`
+- Shared utilities go in `the-widget/api/shared/`
+- Keep functions focused and single-purpose
+- One export per file for main handlers (default export)
+- Named exports for utility functions
+
+### Error Handling
+- Always use try/catch blocks for async operations
+- Return appropriate HTTP status codes (400, 401, 403, 404, 409, 429, 500)
+- Log errors with `console.error()` before returning error responses
+- Provide user-friendly error messages in API responses
+- Never expose internal error details to clients in production
+- Use graceful fallbacks when optional features fail (e.g., Resend Contacts sync)
+
+### API Response Patterns
+- Success responses: `{ success: true, message?: string, ...data }`
+- Error responses: `{ error: string, message?: string }`
+- Always set appropriate HTTP status codes
+- Include CORS headers for all responses
+- Use consistent error codes: `already_subscribed`, `rate_limited`, `captcha_required`, `captcha_failed`, etc.
+
+## Architecture Patterns
+
+### Configuration Management
+- All environment variables must be accessed through `api/shared/config.js`
+- Never access `process.env` directly in endpoint files
+- Group related configs into objects (e.g., `EMAIL_CONFIG`, `CORS_CONFIG`, `FEATURES`)
+- Use feature flags for optional functionality (e.g., `FEATURES.turnstileEnabled`)
+
+### Shared Utilities
+- Common functions go in `api/shared/utils.js`
+- Contact management functions go in `api/shared/contacts.js`
+- Email service abstraction in `api/shared/email-service.js`
+- Database client initialization in `api/shared/database.js`
+- Always check for existing utilities before creating new ones
+
+### Database Patterns
+- Always use normalized email addresses (`normalizeEmail()`) for lookups
+- Use Supabase RPC functions when available (e.g., `get_or_create_contact`)
+- Fallback gracefully if optional tables don't exist (e.g., `contacts` table)
+- Use transactions for multi-step operations when possible
+- Always handle Supabase errors and check for `error` in responses
+
+### Email Service
+- **IMPORTANT**: The email service is hardcoded to use Resend
+- All email sending goes through `api/shared/email-service.js`
+- To use a different email service, modify `email-service.js` only
+- Never import Resend directly in endpoint files
+
+## Security & Compliance
+
+### Security Best Practices
+- Always validate and normalize email addresses before database operations
+- Use cryptographically secure tokens (`generateToken()` from utils)
+- Implement rate limiting for public endpoints (Upstash Redis)
+- Verify CAPTCHA tokens server-side (Cloudflare Turnstile)
+- Never trust client input - validate all data
+- Use environment variables for all secrets - never hardcode
+- Set appropriate CORS headers - restrict to known origins in production
+
+### GDPR Compliance
+- Include privacy policy links in emails when `EMAIL_PRIVACY_POLICY_URL` is set
+- Support consent checkboxes in forms when privacy policy URL is provided
+- Provide unsubscribe functionality with secure tokens
+- Log unsubscribe events in contact activity timeline
+- Note: Data deletion/export endpoints not yet implemented (see docs)
+
+### CAN-SPAM Compliance
+- Include physical sender address in emails when `EMAIL_SENDER_ADDRESS` is set
+- Include unsubscribe links in all marketing emails
+- Include advertisement disclosure when `EMAIL_ADVERTISEMENT_DISCLOSURE` is set
+- Honor unsubscribe requests immediately
+
+## Code Quality & DRY Principles
+
+### Before Writing New Code
+1. **Check for existing similar code** - Search the codebase for similar patterns
+2. **Use shared utilities** - Check `api/shared/utils.js` and `api/shared/contacts.js` first
+3. **Reuse configuration** - Use centralized config from `api/shared/config.js`
+4. **Extract common patterns** - If you see duplication, create a shared function
+
+### Consolidation Rules
+- Extract duplicate logic into shared functions/modules
+- Consolidate repeated styles into shared CSS classes
+- Use centralized configuration instead of scattered hardcoded values
+- Create reusable components/templates when patterns repeat
+- Group related functionality together
+
+### Single Responsibility
+- Each file should have one clear purpose
+- Separate concerns: API logic, database operations, email sending, utilities
+- Keep functions focused - one function, one job
+- Extract complex logic into separate functions
+
+## Frontend Patterns
+
+### JavaScript (Vanilla)
+- Use IIFE pattern for widget code to avoid global scope pollution
+- Use data attributes for configuration (`data-api-url`, `data-source`, etc.)
+- Gracefully handle missing DOM elements (check before use)
+- Use modern DOM APIs (`querySelector`, `addEventListener`)
+- Avoid jQuery or other dependencies
+
+### CSS
+- Use BEM-like naming: `.waitlist-form__*` for scoped styles
+- Keep styles in separate CSS files, not inline
+- Support dark mode when applicable
+- Use CSS variables for theming when possible
+
+### HTML
+- Use semantic HTML elements
+- Include proper ARIA attributes for accessibility
+- Support both Jekyll (Liquid) and plain HTML versions
+
+## Testing & Development
+
+### Local Development
+- Use `npm run start:dev` to run Vercel dev server
+- Test forms locally at `http://localhost:3000/local-test/test-form.html`
+- Always test with actual Supabase and Resend connections
+- Use environment variables from `.env.local`
+
+### Error Scenarios to Test
+- Invalid email formats
+- Duplicate signups
+- Rate limiting
+- CAPTCHA failures
+- Token expiration
+- Missing environment variables
+- Database connection failures
+- Email service failures
+
+## Documentation Standards
+
+### Code Comments
+- Add file-level comments explaining the file's purpose
+- Document complex logic with inline comments
+- Use JSDoc for exported functions
+- Explain "why" not "what" in comments
+
+### Function Documentation
+/**
+ * Brief description of what the function does
+ * @param {string} email - Description of parameter
+ * @returns {Promise<Object>} - Description of return value
+ */## Environment Variables
+
+### Required
+- `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`
+- `RESEND_API_KEY`, `FROM_EMAIL`
+- `BASE_URL`
+- `CORS_ALLOWED_ORIGINS` (comma-separated)
+
+### Optional
+- `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` (rate limiting)
+- `TURNSTILE_SECRET_KEY` (CAPTCHA)
+- `DOUBLE_OPTIN` (defaults to true)
+- `RESEND_AUDIENCE_ID`, `RESEND_WEBHOOK_SECRET` (Contacts sync)
+- `EMAIL_TEMPLATE_STYLE` (minimal/professional/branded)
+- `EMAIL_PRIMARY_COLOR`, `EMAIL_LOGO_URL`, etc.
+
+## Email Templates
+
+### Template System
+- Templates use `{{variable}}` syntax for placeholders
+- Three styles: `minimal` (default), `professional`, `branded`
+- Template files in `the-widget/templates/`
+- Configuration in `the-widget/templates/config.js` and environment variables
+- Always include both HTML and text versions
+
+### Template Customization
+- Use environment variables for quick customization
+- Edit `templates/config.js` for detailed message customization
+- Preview templates with `npm run generate-email-previews`
+
+## Database Schema
+
+### Key Tables
+- `waitlist` - Signup entries (linked to contacts via `contact_id`)
+- `contacts` - Unified contact management (single source of truth)
+- `contact_activity` - Timeline tracking (optional)
+
+### Important Relationships
+- `waitlist.contact_id` → `contacts.id` - Links signups to unified contacts
+- `contacts.user_id` → `auth.users.id` - Optional Supabase Auth integration
+- One contact can have multiple waitlist signups from different sources
+
+### Database Functions
+- Use `get_or_create_contact()` RPC function when available
+- Use `normalizeEmail()` for all email lookups
+- Always check for `contact_id` before falling back to email lookup
+
+## Common Patterns to Follow
+
+### API Endpoint Structure
+import { /* shared utilities */ } from './shared/utils.js';
+import { /* config */ } from './shared/config.js';
+
+export default async function handler(req, res) {
+  // CORS headers
+  const corsHeaders = getCorsHeaders(origin, CORS_CONFIG.allowedOrigins);
+  Object.entries(corsHeaders).forEach(([key, value]) => {
+    res.setHeader(key, value);
+  });
+
+  // Method validation
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    // Validation
+    // Business logic
+    // Response
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
+}### Contact Management
+- Always use `getOrCreateContact()` from `api/shared/contacts.js`
+- Handle cases where contacts table might not exist
+- Update contact status (verified, bounced, unsubscribed) when appropriate
+- Generate unsubscribe tokens for contacts
+
+### Email Sending
+- Use `sendConfirmationEmail()` or `sendWelcomeEmail()` from `api/shared/email-service.js`
+- Never send emails directly from endpoint files
+- Include unsubscribe tokens in welcome emails when available
+- Handle email sending errors gracefully (don't fail the entire request)
+
+## Things to Avoid
+
+- ❌ Don't use CommonJS (`require`, `module.exports`)
+- ❌ Don't access `process.env` directly in endpoint files
+- ❌ Don't duplicate utility functions - check `api/shared/` first
+- ❌ Don't hardcode configuration values
+- ❌ Don't expose internal error details to clients
+- ❌ Don't skip email normalization
+- ❌ Don't create new email service integrations in endpoint files
+- ❌ Don't use global variables in frontend code
+- ❌ Don't skip error handling for optional features
+
+## When Adding New Features
+
+1. **Check existing patterns** - Look for similar functionality first
+2. **Use shared modules** - Leverage existing utilities and config
+3. **Update configuration** - Add new env vars to `api/shared/config.js`
+4. **Document changes** - Update README or relevant docs
+5. **Test thoroughly** - Test both success and error scenarios
+6. **Consider security** - Validate input, rate limit, handle errors
+7. **Maintain compatibility** - Don't break existing integrations
