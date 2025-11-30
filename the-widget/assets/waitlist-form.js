@@ -24,6 +24,10 @@
   if (PRIVACY_POLICY_URL && consentContainer && privacyLink) {
     privacyLink.href = PRIVACY_POLICY_URL;
     consentContainer.style.display = 'block';
+    // Add required attribute only when checkbox is visible
+    if (consentCheckbox) {
+      consentCheckbox.required = true;
+    }
   }
 
   let turnstileToken = null;
