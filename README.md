@@ -626,6 +626,9 @@ EMAIL_PRIMARY_COLOR=#4f46e5
 EMAIL_LOGO_URL=https://yourdomain.com/logo.png
 EMAIL_BRANDED_TEXT_ONLY=true         # For branded templates: show text header instead of logo
 
+# Reply-to address (optional)
+REPLY_TO_EMAIL="Support <support@yourdomain.com>"  # Optional: set reply-to address for emails
+
 # SPAM Compliance (CAN-SPAM Act requirements)
 EMAIL_SENDER_ADDRESS="123 Main St, City, State 12345"  # REQUIRED for marketing emails
 EMAIL_ADVERTISEMENT_DISCLOSURE=                        # Optional: only if emails are promotional

@@ -119,7 +119,7 @@ npm install
 
 **How to do it:**
 1. **Copy the example file:**
-   ```bash
+```bash
    cp env.example .env.local
    ```
 
@@ -143,6 +143,9 @@ npm install
 
 4. **Optional values (can leave as-is or blank):**
    - Email branding (`EMAIL_PROJECT_NAME`, `EMAIL_PRIMARY_COLOR`, `EMAIL_LOGO_URL`, `EMAIL_BRANDED_TEXT_ONLY`, etc.) - can leave as-is, has defaults
+   - `REPLY_TO_EMAIL` - Optional reply-to address for emails (leave blank to use FROM_EMAIL)
+     - Example: `REPLY_TO_EMAIL="Support <support@yourdomain.com>"`
+     - If not set, emails will not include a reply-to header
    - SPAM compliance (`EMAIL_SENDER_ADDRESS`, `EMAIL_ADVERTISEMENT_DISCLOSURE`) - see note below
    - Optional features (`RESEND_AUDIENCE_ID`, `TURNSTILE_SECRET_KEY`, `UPSTASH_*`, etc.) - leave blank if not using
    - Redirect URLs - can leave as-is, rarely need to change
@@ -210,9 +213,9 @@ npm install
    (Opens browser to authenticate)
 
 3. **Deploy:**
-   ```bash
-   vercel --prod
-   ```
+```bash
+vercel --prod
+```
 
 4. **After deployment, import environment variables:**
    - Go to [vercel.com/dashboard](https://vercel.com/dashboard)

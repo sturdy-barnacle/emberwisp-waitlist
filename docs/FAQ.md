@@ -261,6 +261,29 @@ Then redeploy: `vercel --prod`
 
 See `the-widget/templates/TEMPLATE_README.md` for detailed instructions.
 
+### How do I set a reply-to email address?
+
+**Set the `REPLY_TO_EMAIL` environment variable:**
+
+```bash
+REPLY_TO_EMAIL="Support <support@yourdomain.com>"
+```
+
+**What it does:**
+- Sets the reply-to address for all emails (confirmation and welcome emails)
+- When users reply to emails, replies will go to this address instead of the FROM_EMAIL address
+- Useful for directing replies to a support team or specific department
+
+**Format:**
+- Can be just an email: `REPLY_TO_EMAIL=support@yourdomain.com`
+- Or with display name: `REPLY_TO_EMAIL="Support Team <support@yourdomain.com>"`
+
+**If not set:**
+- Emails will not include a reply-to header
+- Replies will go to the FROM_EMAIL address (default behavior)
+
+**Note:** The reply-to address should use a verified domain in Resend (same as FROM_EMAIL).
+
 ### How do I protect my customized templates from being overwritten when syncing from the main repo?
 
 **Use Git's `.gitattributes` file with the `merge=ours` strategy.**
