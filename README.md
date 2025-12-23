@@ -1,6 +1,5 @@
 # emberwisp waitlist widget (v1)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/sturdy-barnacle/emberwisp-waitlist)
 
 Simple, tinkerer-friendly, mostly-drop-in waitlist widget built to work on static sites: Jekyll, plain HTML, React, Astro, Hugo, or anything that can POST JSON.
